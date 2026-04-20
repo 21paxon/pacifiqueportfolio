@@ -5,6 +5,7 @@ import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Github, Linkedin, Menu, X } from "lucide-react"
+import { ThemeToggle } from "@/components/theme-toggle"
 import { site } from "@/lib/site"
 
 export function Navigation() {
@@ -86,6 +87,7 @@ export function Navigation() {
             >
               CV
             </Link>
+            <ThemeToggle />
             <div className="h-6 w-px bg-border" />
             <a
               href={site.githubUrl}
@@ -144,6 +146,9 @@ export function Navigation() {
               >
                 CV
               </Link>
+              <div className="px-3 py-2">
+                <ThemeToggle />
+              </div>
               <div className="px-3 pt-2 flex items-center gap-3">
                 <a
                   href={site.githubUrl}
