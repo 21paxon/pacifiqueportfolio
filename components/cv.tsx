@@ -1,325 +1,208 @@
 "use client"
 
+import Link from "next/link"
+import { site } from "@/lib/site"
+
 export function CV() {
+  const skills = ["Java", "Spring Boot", "AngularJS", "MySQL", "REST APIs", "IoT", "Cybersecurity", "Networking"]
+  const certifications = [
+    "Software Development - DTP",
+    "Cybersecurity - DTP",
+    "AI Career Essentials - ALX Africa",
+    "EF SET English Certificate (B2)",
+  ]
+
   return (
     <>
-      <style jsx>{`
-        .cv-container {
-          display: grid;
-          grid-template-columns: 300px 1fr;
-          max-width: 1000px;
-          margin: 30px auto;
-          background: white;
-          box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+      <div className="mx-auto mt-6 flex max-w-[1000px] items-center justify-between gap-3 px-4 sm:px-0 print:hidden">
+        <Link
+          href="/"
+          className="rounded-md border border-[#b6cae0] bg-white px-4 py-2 text-sm font-medium text-[#1f4d7d] transition hover:bg-[#f3f8fe]"
+          aria-label="Back to portfolio"
+        >
+          Back to Portfolio
+        </Link>
+        <button
+          onClick={() => window.print()}
+          className="rounded-md bg-[#0a66c2] px-4 py-2 text-sm font-medium text-white transition hover:bg-[#0856a3]"
+          aria-label="Download CV as PDF"
+        >
+          Download PDF
+        </button>
+      </div>
+      <style jsx global>{`
+        #cv-root {
+          font-family: "Source Serif 4", "Georgia", "Times New Roman", serif;
         }
 
-        .cv-sidebar {
-          background: #0a66c2;
-          color: white;
-          padding: 25px;
-        }
-
-        .cv-main {
-          padding: 30px;
-        }
-
-        .cv-sidebar h1 {
-          margin: 0;
-          font-size: 26px;
-          font-weight: bold;
-        }
-
-        .cv-sidebar h2,
-        .cv-main h2 {
-          font-size: 16px;
-          margin-top: 25px;
-          border-bottom: 2px solid #ddd;
-          padding-bottom: 5px;
-        }
-
-        .cv-sidebar h2 {
-          border-bottom-color: rgba(255,255,255,0.3);
-          color: white;
-        }
-
-        .cv-main h2 {
-          color: #333;
-        }
-
-        .cv-contact {
-          font-size: 13px;
-          line-height: 1.8;
-        }
-
-        .cv-contact p {
-          margin: 5px 0;
-        }
-
-        .cv-contact a {
-          color: white;
-          text-decoration: none;
-        }
-
-        .cv-contact a:hover {
-          text-decoration: underline;
-        }
-
-        .cv-skill {
-          background: rgba(255,255,255,0.2);
-          padding: 6px 10px;
-          border-radius: 6px;
-          display: inline-block;
-          margin: 4px 2px;
-          font-size: 12px;
-          color: white;
-        }
-
-        .cv-job {
-          margin-bottom: 15px;
-        }
-
-        .cv-job-title {
-          font-weight: bold;
-          font-size: 14px;
-        }
-
-        .cv-job-date {
-          font-size: 12px;
-          color: #999;
-        }
-
-        .cv-main p, .cv-main li {
-          font-size: 14px;
-          line-height: 1.6;
-          color: #333;
-        }
-
-        .cv-main ul {
-          padding-left: 18px;
+        #cv-root .cv-label,
+        #cv-root .cv-chip,
+        #cv-root .cv-meta,
+        #cv-root .cv-body {
+          font-family: "IBM Plex Sans", "Segoe UI", "Helvetica Neue", sans-serif;
         }
 
         @media print {
-          * { 
-            -webkit-print-color-adjust: exact !important; 
+          * {
+            -webkit-print-color-adjust: exact !important;
             print-color-adjust: exact !important;
-            color-adjust: exact !important;
-            -moz-print-color-adjust: exact !important;
           }
-          
-          html, body { 
-            background: white !important; 
-            margin: 0 !important; 
-            padding: 0 !important; 
-            width: 100% !important;
-            height: auto !important;
-          }
-          
-          .cv-container { 
-            display: grid !important;
-            grid-template-columns: 300px 1fr !important;
-            box-shadow: none !important; 
-            margin: 0 !important; 
-            padding: 0 !important;
-            max-width: 100% !important;
-            width: 100% !important;
-            height: auto !important;
-            background: white !important;
-            page-break-inside: avoid !important;
-          }
-          
-          .cv-sidebar { 
-            display: block !important;
-            background: #0a66c2 !important; 
-            color: white !important;
-            padding: 25px !important;
-            page-break-inside: avoid !important;
-            width: 300px !important;
-            height: auto !important;
-          }
-          
-          .cv-main { 
-            display: block !important;
-            background: white !important;
-            color: #333 !important;
-            padding: 30px !important;
-            width: 1fr !important;
-            height: auto !important;
-          }
-          
-          .cv-sidebar h1 { 
-            color: white !important; 
-            font-size: 26px !important;
-          }
-          
-          .cv-sidebar h2,
-          .cv-main h2 { 
-            color: #333 !important;
-            page-break-after: avoid !important;
-          }
-          
-          .cv-sidebar h2 {
-            color: white !important;
-            border-bottom-color: rgba(255,255,255,0.3) !important;
-          }
-          
-          .cv-contact { 
-            font-size: 13px !important; 
-            line-height: 1.8 !important;
-            color: white !important;
-          }
-          
-          .cv-contact p { 
-            color: white !important;
-            margin: 5px 0 !important;
-          }
-          
-          .cv-contact a { 
-            color: white !important; 
-            text-decoration: none !important;
-          }
-          
-          .cv-skill { 
-            background: rgba(255,255,255,0.2) !important;
-            color: white !important;
-            padding: 6px 10px !important;
-            border-radius: 6px !important;
-            display: inline-block !important;
-            margin: 4px 2px !important;
-            font-size: 12px !important;
-          }
-          
-          .cv-job { 
-            page-break-inside: avoid !important;
-            margin-bottom: 15px !important;
-          }
-          
-          .cv-job-title {
-            font-weight: bold !important;
-            font-size: 14px !important;
-            color: #333 !important;
-          }
-          
-          .cv-job-date {
-            font-size: 12px !important;
-            color: #0a66c2 !important;
-          }
-          
-          .cv-main p, .cv-main li {
-            font-size: 14px !important;
-            line-height: 1.6 !important;
-            color: #333 !important;
-          }
-          
-          h2, h3 { page-break-after: avoid !important; }
-          ul, ol { page-break-inside: avoid !important; }
-          
-          li { page-break-inside: avoid !important; }
-        }
 
-        @media (max-width: 768px) {
-          .cv-container {
-            grid-template-columns: 1fr;
-          }
-          .cv-sidebar {
-            padding: 20px;
-          }
-          .cv-main {
-            padding: 20px;
+          #cv-root {
+            box-shadow: none !important;
+            margin: 0 !important;
+            max-width: 100% !important;
+            border-radius: 0 !important;
           }
         }
       `}</style>
-      <div id="cv-root" className="cv-container">
-        {/* SIDEBAR */}
-        <div className="cv-sidebar">
-          <h1>Pacifique Niyogushimwa</h1>
-          
-          <div className="cv-contact">
-            <p>Kigali, Rwanda</p>
-            <p>+250 787 653 042</p>
-            <p>paxon2121@outlook.com</p>
-            <p><a href="https://www.linkedin.com/in/pacifique-niyogushimwa-b689033ab" target="_blank" rel="noopener noreferrer">LinkedIn Profile</a></p>
-            <p><a href="https://pacifique-21.netlify.app/" target="_blank" rel="noopener noreferrer">Portfolio Website</a></p>
-            <p><a href="https://github.com/21paxon" target="_blank" rel="noopener noreferrer">GitHub Profile</a></p>
+      <div
+        id="cv-root"
+        className="mx-auto my-8 max-w-[1000px] overflow-hidden rounded-2xl border border-[#d6dfeb] bg-white shadow-[0_24px_60px_rgba(18,42,66,0.2)]"
+      >
+        <header className="relative overflow-hidden border-b border-[#d6dfeb] bg-[linear-gradient(130deg,#0f3058_0%,#124a86_42%,#2679c8_100%)] px-6 py-8 text-white md:px-8">
+          <div className="pointer-events-none absolute -left-8 -top-8 h-36 w-36 rounded-full bg-white/10 blur-2xl" />
+          <div className="pointer-events-none absolute -bottom-10 right-0 h-44 w-44 rounded-full bg-[#7fd8ff]/30 blur-2xl" />
+
+          <div className="relative flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+            <div>
+              <p className="cv-label text-xs uppercase tracking-[0.22em] text-white/80">Curriculum Vitae</p>
+              <h1 className="mt-2 text-4xl font-semibold leading-tight md:text-5xl">{site.name}</h1>
+              <p className="cv-body mt-2 max-w-2xl text-sm text-white/90 md:text-base">
+                IT Professional focused on software development, networking, cybersecurity, and IoT systems.
+              </p>
+            </div>
+
+            <div className="cv-meta grid gap-1 text-sm md:text-right">
+                <p>{site.location}</p>
+                <p>{site.phone}</p>
+                <p>{site.email}</p>
+            </div>
           </div>
+        </header>
 
-          <h2>Skills</h2>
-          <div>
-            {["Java", "Spring Boot", "AngularJS", "MySQL", "REST APIs", "IoT", "Cybersecurity", "Networking"].map(skill => (
-              <span key={skill} className="cv-skill">{skill}</span>
-            ))}
-          </div>
+        <div className="grid md:grid-cols-[280px_1fr]">
+          <aside className="border-b border-[#d6dfeb] bg-[#f6f9fc] px-6 py-7 md:border-b-0 md:border-r md:px-7 md:py-8">
+            <h2 className="cv-label text-[11px] font-semibold uppercase tracking-[0.16em] text-[#1f4d7d]">Profile Links</h2>
+            <div className="cv-body mt-3 space-y-1.5 text-[13px] leading-6 text-[#21456b]">
+              <p>
+                <a href={site.linkedinUrl} target="_blank" rel="noopener noreferrer" className="hover:text-[#0a66c2] hover:underline">
+                  LinkedIn Profile
+                </a>
+              </p>
+              <p>
+                <a href={site.portfolioUrl} target="_blank" rel="noopener noreferrer" className="hover:text-[#0a66c2] hover:underline">
+                  Portfolio Website
+                </a>
+              </p>
+              <p>
+                <a href={site.githubUrl} target="_blank" rel="noopener noreferrer" className="hover:text-[#0a66c2] hover:underline">
+                  GitHub Profile
+                </a>
+              </p>
+            </div>
 
-          <h2>Certifications</h2>
-          <ul style={{color: 'white', fontSize: '13px'}}>
-            <li>Software Development – DTP</li>
-            <li>Cybersecurity – DTP</li>
-            <li>AI Career Essentials – ALX Africa</li>
-            <li>EF SET English Certificate (C2)</li>
-          </ul>
+            <h2 className="cv-label mt-7 text-[11px] font-semibold uppercase tracking-[0.16em] text-[#1f4d7d]">Core Skills</h2>
+            <div className="mt-3 flex flex-wrap gap-2">
+              {skills.map((skill) => (
+                <span key={skill} className="cv-chip rounded-full border border-[#c8d8eb] bg-white px-3 py-1 text-[12px] font-medium text-[#15406b]">
+                  {skill}
+                </span>
+              ))}
+            </div>
 
-          <h2>Languages</h2>
-          <p style={{margin: '5px 0', fontSize: '13px'}}>English (C2)</p>
-          <p style={{margin: '5px 0', fontSize: '13px'}}>Kinyarwanda (Native)</p>
-        </div>
-
-        {/* MAIN CONTENT */}
-        <div className="cv-main">
-          <h2>Professional Summary</h2>
-          <p>Results-driven IT professional with strong experience in software development, networking, cybersecurity, and IoT systems. Skilled in Java, Spring Boot, and AngularJS with hands-on experience building scalable applications, secure backend systems, and real-world smart solutions.</p>
-
-          <h2>Professional Experience</h2>
-          <div className="cv-job">
-            <p className="cv-job-title">IT Instructor - Muhanga Technical Center</p>
-            <p className="cv-job-date">2025 – Present</p>
-            <ul>
-              <li>Train students in software development and networking fundamentals</li>
-              <li>Supervise and guide real-world technical projects</li>
+            <h2 className="cv-label mt-7 text-[11px] font-semibold uppercase tracking-[0.16em] text-[#1f4d7d]">Certifications</h2>
+            <ul className="cv-body mt-3 list-disc space-y-1 pl-5 text-[13px] text-[#1d4266]">
+              {certifications.map((item) => (
+                <li key={item}>{item}</li>
+              ))}
             </ul>
-          </div>
 
-          <div className="cv-job">
-            <p className="cv-job-title">IT Consultant - RISA</p>
-            <p className="cv-job-date">2025</p>
-            <ul>
-              <li>Supported IT infrastructure, system deployment, and troubleshooting</li>
+            <h2 className="cv-label mt-7 text-[11px] font-semibold uppercase tracking-[0.16em] text-[#1f4d7d]">Languages</h2>
+            <p className="cv-body mt-2 text-[13px] text-[#1d4266]">English (B2)</p>
+            <p className="cv-body text-[13px] text-[#1d4266]">Kinyarwanda (Native)</p>
+          </aside>
+
+          <section className="px-6 py-7 text-[#1d2733] md:px-8 md:py-8">
+            <h2 className="cv-label text-[11px] font-semibold uppercase tracking-[0.16em] text-[#1f4d7d]">Professional Summary</h2>
+            <p className="cv-body mt-3 text-[14px] leading-[1.7] text-[#2e3945]">
+              Results-driven IT professional with strong experience in software development, networking, cybersecurity, and IoT systems.
+              Skilled in Java, Spring Boot, and AngularJS with hands-on experience building scalable applications, secure backend systems,
+              and practical smart solutions.
+            </p>
+
+            <h2 className="cv-label mt-7 text-[11px] font-semibold uppercase tracking-[0.16em] text-[#1f4d7d]">Professional Experience</h2>
+            <div className="mt-3 space-y-4">
+              <div className="rounded-xl border border-[#d6dfeb] bg-[#fbfdff] p-4">
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                  <p className="cv-body text-[14px] font-semibold text-[#1e3349]">IT Instructor - Muhanga Technical Center</p>
+                  <span className="cv-meta rounded-full bg-[#dcecff] px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wide text-[#124a86]">
+                    2025 - Present
+                  </span>
+                </div>
+                <ul className="cv-body mt-2 list-disc pl-5 text-[14px] leading-[1.6] text-[#344455]">
+                  <li>Train students in software development and networking fundamentals</li>
+                  <li>Supervise and guide real-world technical projects</li>
+                </ul>
+              </div>
+
+              <div className="rounded-xl border border-[#d6dfeb] bg-[#fbfdff] p-4">
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                  <p className="cv-body text-[14px] font-semibold text-[#1e3349]">IT Consultant - RISA</p>
+                  <span className="cv-meta rounded-full bg-[#dcecff] px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wide text-[#124a86]">
+                    2025
+                  </span>
+                </div>
+                <ul className="cv-body mt-2 list-disc pl-5 text-[14px] leading-[1.6] text-[#344455]">
+                  <li>Supported IT infrastructure, system deployment, and troubleshooting</li>
+                </ul>
+              </div>
+
+              <div className="rounded-xl border border-[#d6dfeb] bg-[#fbfdff] p-4">
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                  <p className="cv-body text-[14px] font-semibold text-[#1e3349]">IT Support Specialist - VTC Ltd</p>
+                  <span className="cv-meta rounded-full bg-[#dcecff] px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wide text-[#124a86]">
+                    2024
+                  </span>
+                </div>
+                <ul className="cv-body mt-2 list-disc pl-5 text-[14px] leading-[1.6] text-[#344455]">
+                  <li>Provided technical support, system maintenance, and deployment services</li>
+                </ul>
+              </div>
+            </div>
+
+            <h2 className="cv-label mt-7 text-[11px] font-semibold uppercase tracking-[0.16em] text-[#1f4d7d]">Featured Projects</h2>
+            <ul className="cv-body mt-3 list-disc space-y-3 pl-5 text-[14px] leading-[1.6] text-[#344455]">
+              <li>
+                <strong className="text-[#1e3349]">Smart Security System (IoT)</strong>
+                <br />
+                Developed a real-time monitoring and alert system using IoT sensors with a focus on automation and security efficiency.
+              </li>
+              <li>
+                <strong className="text-[#1e3349]">Bus Booking System (Spring Boot)</strong>
+                <br />
+                Built a RESTful backend for reservations and scheduling.
+                <a href={site.repoUrl} target="_blank" rel="noopener noreferrer" className="ml-1 font-semibold text-[#0a66c2] hover:underline">
+                  View Projects
+                </a>
+              </li>
+              <li>
+                <strong className="text-[#1e3349]">Inventory Management System</strong>
+                <br />
+                Designed backend logic and database integration.
+              </li>
+              <li>
+                <strong className="text-[#1e3349]">IoT Patient Monitoring System</strong>
+                <br />
+                Developed a system for real-time health monitoring using connected sensors.
+              </li>
             </ul>
-          </div>
 
-          <div className="cv-job">
-            <p className="cv-job-title">IT Support Specialist - VTC Ltd</p>
-            <p className="cv-job-date">2024</p>
-            <ul>
-              <li>Provided technical support, system maintenance, and deployment services</li>
-            </ul>
-          </div>
-
-          <h2>Featured Projects</h2>
-          <ul>
-            <li>
-              <strong>Smart Security System (IoT)</strong><br/>
-              - Developed a real-time monitoring and alert system using IoT sensors<br/>
-              - Focused on automation and security efficiency
-            </li>
-
-            <li>
-              <strong>Bus Booking System (Spring Boot)</strong><br/>
-              - Built RESTful backend for reservations and scheduling<br/>
-              - <a href="https://github.com/21paxon" target="_blank" rel="noopener noreferrer" style={{color: '#0a66c2', textDecoration: 'none'}}>View Projects</a>
-            </li>
-
-            <li>
-              <strong>Inventory Management System</strong><br/>
-              - Designed backend logic and database integration
-            </li>
-
-            <li>
-              <strong>IoT Patient Monitoring System</strong><br/>
-              - Developed system for real-time health monitoring using sensors
-            </li>
-          </ul>
-
-          <h2>Education</h2>
-          <p>Bachelor&apos;s Degree in Information Technology - RP Musanze College (2023–2025)</p>
+            <h2 className="cv-label mt-7 text-[11px] font-semibold uppercase tracking-[0.16em] text-[#1f4d7d]">Education</h2>
+            <p className="cv-body mt-3 text-[14px] leading-[1.6] text-[#344455]">
+              Bachelor&apos;s Degree in Information Technology - RP Musanze College (2023-2025)
+            </p>
+          </section>
         </div>
       </div>
     </>

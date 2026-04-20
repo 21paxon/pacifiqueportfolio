@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react"
 import Link from "next/link"
+import { usePathname } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Github, Linkedin, Menu, X } from "lucide-react"
 import { site } from "@/lib/site"
@@ -9,6 +10,8 @@ import { site } from "@/lib/site"
 export function Navigation() {
   const [isOpen, setIsOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
+  const pathname = usePathname()
+  const isHomePage = pathname === "/"
 
   useEffect(() => {
     const handleScroll = () => {
@@ -19,6 +22,7 @@ export function Navigation() {
   }, [])
 
   const scrollToSection = (id: string) => {
+    if (!isHomePage) return
     document.getElementById(id)?.scrollIntoView({ behavior: "smooth" })
     setIsOpen(false)
   }
@@ -39,24 +43,43 @@ export function Navigation() {
     >
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
-          <button
-            onClick={() => scrollToSection("home")}
-            className="font-semibold text-base sm:text-lg text-foreground hover:text-foreground/90 transition-colors"
-          >
-            {site.name}
-          </button>
+          {isHomePage ? (
+            <button
+              onClick={() => scrollToSection("home")}
+              className="font-semibold text-base sm:text-lg text-foreground hover:text-foreground/90 transition-colors"
+            >
+              {site.name}
+            </button>
+          ) : (
+            <Link
+              href="/"
+              className="font-semibold text-base sm:text-lg text-foreground hover:text-foreground/90 transition-colors"
+            >
+              {site.name}
+            </Link>
+          )}
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center gap-7">
-            {navItems.map((item) => (
-              <button
-                key={item.id}
-                onClick={() => scrollToSection(item.id)}
-                className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-              >
-                {item.label}
-              </button>
-            ))}
+            {isHomePage
+              ? navItems.map((item) => (
+                  <button
+                    key={item.id}
+                    onClick={() => scrollToSection(item.id)}
+                    className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                  >
+                    {item.label}
+                  </button>
+                ))
+              : navItems.map((item) => (
+                  <Link
+                    key={item.id}
+                    href={`/#${item.id}`}
+                    className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                  >
+                    {item.label}
+                  </Link>
+                ))}
             <Link
               href="/cv"
               className="text-sm text-muted-foreground hover:text-foreground transition-colors"
@@ -94,15 +117,26 @@ export function Navigation() {
         {isOpen && (
           <div className="md:hidden bg-background/98 backdrop-blur-sm border-t border-border">
             <div className="px-2 pt-2 pb-3 space-y-1">
-              {navItems.map((item) => (
-                <button
-                  key={item.id}
-                  onClick={() => scrollToSection(item.id)}
-                  className="block w-full text-left px-3 py-2 text-muted-foreground hover:text-foreground transition-colors"
-                >
-                  {item.label}
-                </button>
-              ))}
+              {isHomePage
+                ? navItems.map((item) => (
+                    <button
+                      key={item.id}
+                      onClick={() => scrollToSection(item.id)}
+                      className="block w-full text-left px-3 py-2 text-muted-foreground hover:text-foreground transition-colors"
+                    >
+                      {item.label}
+                    </button>
+                  ))
+                : navItems.map((item) => (
+                    <Link
+                      key={item.id}
+                      href={`/#${item.id}`}
+                      className="block w-full text-left px-3 py-2 text-muted-foreground hover:text-foreground transition-colors"
+                      onClick={() => setIsOpen(false)}
+                    >
+                      {item.label}
+                    </Link>
+                  ))}
               <Link
                 href="/cv"
                 className="block w-full text-left px-3 py-2 text-muted-foreground hover:text-foreground transition-colors"

@@ -1,5 +1,5 @@
 export const site = {
-  name: "Pacifique Niyogushimwa",
+  name: "Pacifique NIYOGUSHIMWA",
   subtitle: "Full-Stack Developer | Android & Web",
   role: "IT Professional • Software Development • Cybersecurity • IoT",
   valueStatement: "Building scalable web apps with Spring Boot & Angular. Passionate about solving real-world problems through code.",
@@ -10,7 +10,7 @@ export const site = {
   linkedinUrl: "https://linkedin.com/in/pacifique-niyogushimwa-b689033ab",
   portfolioUrl: "https://github.com/21paxon/portfolio_2",
   repoUrl: "https://github.com/21paxon?tab=repositories",
-  cvUrl: "", // Print via browser (no PDF file)
+  cvUrl: "/cv", // Hosted CV page (view online)
   stats: {
     projects: 25,
     yearsExperience: 3,
@@ -21,10 +21,10 @@ export const site = {
     "Software Development – DTP",
     "Cybersecurity – DTP", 
     "AI Career Essentials – ALX Africa",
-    "EF SET English Certificate (C2)"
+    "EF SET English Certificate (B2)"
   ],
   languages: [
-    { name: "English", level: "C2" },
+    { name: "English", level: "B2" },
     { name: "Kinyarwanda", level: "Native" }
   ]
 } as const

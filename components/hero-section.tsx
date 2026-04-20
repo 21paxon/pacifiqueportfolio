@@ -1,14 +1,13 @@
 "use client"
 
-"use client"
-
 import { motion } from "framer-motion"
 import { useState } from "react"
 import Image from "next/image"
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog"
-import { Download, MapPin, Mail, Phone, Github, Linkedin, ArrowDownRight } from "lucide-react"
+import { MapPin, Mail, Phone, Github, Linkedin, ArrowDownRight, Download } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
+import { HireMeButton } from "@/components/hire-me-button"
 import { site } from "@/lib/site"
 
 
@@ -88,37 +87,50 @@ export function HeroSection() {
               </div>
             </div>
 
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}
-              className="flex flex-col sm:flex-row gap-4 mt-12"
+              className="mt-12 space-y-4"
             >
-              <motion.div className="flex gap-3">
+              <motion.div className="flex flex-wrap items-center gap-3">
                 <Button asChild size="lg" className="bg-accent text-accent-foreground hover:bg-accent/90 shadow-lg">
                   <a href="#projects">
                     View Projects
                     <ArrowDownRight className="h-4 w-4 ml-2" />
                   </a>
                 </Button>
-                <Button asChild variant="outline" size="lg">
+                <Button asChild variant="outline" size="lg" className="w-full sm:w-auto">
                   <a href="#contact">Contact Me</a>
                 </Button>
               </motion.div>
-              <motion.div className="flex gap-2">
-                <Button asChild variant="ghost" size="lg" aria-label="Download CV">
-                  <a href={site.cvUrl} target="_blank" rel="noopener noreferrer" download>
-                    <Download className="h-5 w-5 mr-2" />
+
+              <motion.div className="flex flex-wrap items-center gap-3">
+                <Button
+                  asChild
+                  variant="outline"
+                  size="lg"
+                  className="w-full rounded-xl border-[#3b82f6]/40 bg-[#0b1220] text-[#dbeafe] transition-all duration-300 hover:scale-[1.02] hover:border-[#3b82f6] hover:bg-[#111b30] hover:shadow-[0_10px_30px_rgba(37,99,235,0.25)] sm:w-auto"
+                  aria-label="Download CV"
+                >
+                  <a href={site.cvUrl}>
+                    <Download className="mr-2 h-5 w-5" />
                     Download CV
                   </a>
                 </Button>
-                <Button asChild variant="ghost" size="lg" aria-label="GitHub">
+
+                <HireMeButton
+                  label="Hire Me"
+                  href={`mailto:${site.email}?subject=Recruiter%20Inquiry%20-%20${encodeURIComponent(site.name)}&body=Hello%20${encodeURIComponent(site.name)},%0A%0AI'm%20a%20recruiter%20interested%20in%20your%20profile.%0A%0ARole:%20%0ACompany:%20%0ALocation:%20%0AEmployment%20Type:%20%0AStart%20Date:%20%0A%0ABest%20regards,%0A`}
+                />
+
+                <Button asChild variant="ghost" size="lg" className="w-full sm:w-auto" aria-label="GitHub">
                   <a href={site.githubUrl} target="_blank" rel="noopener noreferrer">
                     <Github className="h-5 w-5 mr-2" />
                     GitHub
                   </a>
                 </Button>
-                <Button asChild variant="ghost" size="lg" aria-label="LinkedIn">
+                <Button asChild variant="ghost" size="lg" className="w-full sm:w-auto" aria-label="LinkedIn">
                   <a href={site.linkedinUrl} target="_blank" rel="noopener noreferrer">
                     <Linkedin className="h-5 w-5 mr-2" />
                     LinkedIn
