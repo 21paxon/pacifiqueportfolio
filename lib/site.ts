@@ -8,7 +8,7 @@ export const site = {
   email: "niyogushimwapacifique6@gmail.com",
   githubUrl: "https://github.com/21paxon",
   linkedinUrl: "https://linkedin.com/in/pacifique-niyogushimwa-b689033ab",
-  portfolioUrl: "https://github.com/21paxon/portfolio_2",
+  portfolioUrl: "https://pacifiqueniyogushimwa.netlify.app/",
   repoUrl: "https://github.com/21paxon?tab=repositories",
   cvUrl: "/cv", // Hosted CV page (view online)
   stats: {

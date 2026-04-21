@@ -4,7 +4,7 @@ import Link from "next/link"
 import { site } from "@/lib/site"
 
 export function CV() {
-  const skills = ["Java", "Spring Boot", "AngularJS", "MySQL", "REST APIs", "IoT", "Cybersecurity", "Networking"]
+  const skills = ["Java", "Spring Boot", "Angular", "Node.js", "MySQL", "REST APIs", "IoT", "Cybersecurity", "Networking"]
   const certifications = [
     "Software Development - DTP",
     "Cybersecurity - DTP",
@@ -69,7 +69,7 @@ export function CV() {
               <p className="cv-label text-xs uppercase tracking-[0.22em] text-white/80">Curriculum Vitae</p>
               <h1 className="mt-2 text-4xl font-semibold leading-tight md:text-5xl">{site.name}</h1>
               <p className="cv-body mt-2 max-w-2xl text-sm text-white/90 md:text-base">
-                IT Professional focused on software development, networking, cybersecurity, and IoT systems.
+                Full-Stack Developer focused on software development, networking, cybersecurity, and IoT systems.
               </p>
             </div>
 
@@ -126,9 +126,9 @@ export function CV() {
           <section className="px-6 py-7 text-[#1d2733] md:px-8 md:py-8">
             <h2 className="cv-label text-[11px] font-semibold uppercase tracking-[0.16em] text-[#1f4d7d]">Professional Summary</h2>
             <p className="cv-body mt-3 text-[14px] leading-[1.7] text-[#2e3945]">
-              Results-driven IT professional with strong experience in software development, networking, cybersecurity, and IoT systems.
-              Skilled in Java, Spring Boot, and AngularJS with hands-on experience building scalable applications, secure backend systems,
-              and practical smart solutions.
+              Results-driven Full-Stack Developer with strong experience in software development, networking, cybersecurity, and IoT systems.
+              Skilled in Java, Spring Boot, Angular, and backend API development with hands-on experience building scalable applications,
+              secure backend systems, and practical smart solutions.
             </p>
 
             <h2 className="cv-label mt-7 text-[11px] font-semibold uppercase tracking-[0.16em] text-[#1f4d7d]">Professional Experience</h2>
@@ -182,7 +182,7 @@ export function CV() {
                 <strong className="text-[#1e3349]">Bus Booking System (Spring Boot)</strong>
                 <br />
                 Built a RESTful backend for reservations and scheduling.
-                <a href={site.repoUrl} target="_blank" rel="noopener noreferrer" className="ml-1 font-semibold text-[#0a66c2] hover:underline">
+                <a href={`${site.portfolioUrl}#projects`} target="_blank" rel="noopener noreferrer" className="ml-1 font-semibold text-[#0a66c2] hover:underline">
                   View Projects
                 </a>
               </li>
