@@ -1,8 +1,9 @@
 export const site = {
   name: "Pacifique NIYOGUSHIMWA",
-  subtitle: "Full-Stack Developer | Android & Web",
-  role: "IT Professional • Software Development • Cybersecurity • IoT",
-  valueStatement: "Building scalable web apps with Spring Boot & Angular. Passionate about solving real-world problems through code.",
+  subtitle: "Full-Stack Developer | Network Engineer | IoT Enthusiast",
+  role: "Information Technology • Software Development • Networking • IoT",
+  valueStatement:
+    "I build practical software, connect systems, and explore IoT solutions that solve real-world problems. Currently expanding my skills in Machine Learning.",
   location: "Kigali, Rwanda",
   phone: "+250 787 653 042",
   email: "niyogushimwapacifique6@gmail.com",
@@ -10,23 +11,15 @@ export const site = {
   linkedinUrl: "https://linkedin.com/in/pacifique-niyogushimwa-b689033ab",
   portfolioUrl: "https://pacifiqueniyogushimwa.netlify.app/",
   repoUrl: "https://github.com/21paxon?tab=repositories",
-  cvUrl: "/cv", // Hosted CV page (view online)
-  stats: {
-    projects: 25,
-    yearsExperience: 3,
-    githubStars: 42,
-    clients: 12
-  },
+  cvUrl: "/cv",
   certifications: [
     "Software Development – DTP",
-    "Cybersecurity – DTP", 
+    "Cybersecurity – DTP",
     "AI Career Essentials – ALX Africa",
-    "EF SET English Certificate (B2)"
+    "EF SET English Certificate (B2)",
   ],
   languages: [
     { name: "English", level: "B2" },
-    { name: "Kinyarwanda", level: "Native" }
-  ]
+    { name: "Kinyarwanda", level: "Native" },
+  ],
 } as const
-
-
