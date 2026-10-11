@@ -32,7 +32,7 @@ export function HeroSection() {
             <h2 className="text-xl sm:text-3xl lg:text-4xl font-bold text-accent leading-tight">
               {site.subtitle}
             </h2>
-            <p className="text-base sm:text-2xl lg:text-3xl text-muted-foreground max-w-2xl leading-relaxed">
+            <p className="text-base sm:text-lg lg:text-xl text-muted-foreground max-w-2xl leading-relaxed">
               {site.valueStatement}
             </p>
 
