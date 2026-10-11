@@ -8,11 +8,26 @@ import { Toaster } from "@/components/ui/toaster"
 import { ThemeProvider } from "@/components/theme-provider"
 import "./globals.css"
 
-
 export const metadata: Metadata = {
-  title: "Pacifique Niyogushimwa - Portfolio",
-  description: "Results-driven IT professional with experience in software development, networking, cybersecurity, IoT | Kigali, Rwanda",
-  generator: "v0.app",
+  title: "Pacifique Niyogushimwa | Software Developer, Network Engineer & IoT",
+  description:
+    "Portfolio of Pacifique Niyogushimwa, an IT professional in Kigali, Rwanda, focused on software development, networking, IoT systems, and Machine Learning.",
+  keywords: [
+    "Pacifique Niyogushimwa",
+    "Software Developer Rwanda",
+    "Full-Stack Developer Kigali",
+    "Network Engineer",
+    "IoT Developer",
+    "Spring Boot",
+    "Angular",
+  ],
+  openGraph: {
+    title: "Pacifique Niyogushimwa | Technology Portfolio",
+    description:
+      "Explore software development, networking, and IoT projects by Pacifique Niyogushimwa.",
+    type: "website",
+    locale: "en_RW",
+  },
 }
 
 export default function RootLayout({
@@ -29,7 +44,6 @@ export default function RootLayout({
         <Toaster />
         <Analytics />
       </body>
-
     </html>
   )
 }
