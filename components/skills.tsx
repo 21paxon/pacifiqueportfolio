@@ -8,19 +8,19 @@ const skillCategories = [
     title: "Software Development",
     description: "Building applications and APIs",
     icon: Code2,
-    skills: ["Java", "Spring Boot", "JavaScript", "TypeScript", "Angular", "Python", "Node.js", "REST APIs"],
+    skills: ["Java", "Spring Boot", "JavaScript", "TypeScript", "Angular", "Python", "Node.js", "Express.js", "REST APIs"],
   },
   {
     title: "Databases & Data",
-    description: "Working with application data",
+    description: "Working with application data and analysis",
     icon: Database,
-    skills: ["MySQL", "PostgreSQL", "SQL", "Data handling"],
+    skills: ["PostgreSQL", "MySQL", "SQL", "R", "Pandas", "Tidyverse", "Exploratory Data Analysis"],
   },
   {
     title: "Networking & Systems",
     description: "Connecting and supporting systems",
     icon: Network,
-    skills: ["Cisco Networking", "Linux", "Network Configuration", "System Administration"],
+    skills: ["Cisco Networking", "Linux", "Network Configuration", "System Administration", "IT Support", "Troubleshooting"],
   },
   {
     title: "IoT & Embedded Systems",
@@ -32,13 +32,19 @@ const skillCategories = [
     title: "Cybersecurity",
     description: "Building security awareness into technology",
     icon: ShieldCheck,
-    skills: ["Cybersecurity Fundamentals", "Network Security", "Secure System Practices"],
+    skills: ["Cybersecurity Fundamentals", "Network Security", "Role-Based Access", "Secure System Practices"],
   },
   {
-    title: "Machine Learning",
-    description: "Currently learning and practicing",
+    title: "Machine Learning & Statistics",
+    description: "Learning and practising data-driven methods",
     icon: BrainCircuit,
-    skills: ["Python", "Pandas", "Scikit-learn", "Regression", "Model Evaluation"],
+    skills: ["Python", "Scikit-learn", "Linear Regression", "R Regression", "Model Evaluation"],
+  },
+  {
+    title: "Mobile & Integration",
+    description: "Exploring mobile applications and connected services",
+    icon: Code2,
+    skills: ["Kotlin", "Android", "Retrofit", "USSD Applications", "API Integration"],
   },
 ]
 
@@ -50,7 +56,7 @@ export function Skills() {
           <p className="text-sm font-semibold uppercase tracking-[0.2em] text-accent mb-3">What I work with</p>
           <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-4">Technical Skills</h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Tools and technologies I use in projects and continue to develop through hands-on practice.
+            Technologies and methods represented in my projects, alongside skills I am continuing to develop through practical work.
           </p>
         </div>
 
