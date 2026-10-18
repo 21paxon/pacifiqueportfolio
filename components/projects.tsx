@@ -100,6 +100,15 @@ const projects: Project[] = [
     github: "https://github.com/21paxon/crudsringboot",
   },
   {
+    title: "JavaScript Fundamentals Practice",
+    description: "A collection of small HTML and JavaScript exercises covering functions, string length, loops, and basic programming logic.",
+    problem: "Programming fundamentals improve through short, focused exercises and repeated practice.",
+    solution: "Organized standalone browser-based examples to practise JavaScript functions, strings, and loop logic.",
+    image: "/modern-ecommerce-interface.png",
+    tech: ["JavaScript", "HTML", "Programming Fundamentals"],
+    github: "https://github.com/21paxon/Javascriptcourse",
+  },
+  {
     title: "Smart Security System Using IoT",
     description: "An IoT project concept for monitoring restricted spaces and supporting remote security alerts.",
     problem: "Restricted rooms can benefit from timely movement detection and remote monitoring.",
