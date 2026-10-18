@@ -115,8 +115,9 @@ export function CV() {
             </div>
 
             <SectionTitle>Education</SectionTitle>
-            <article className="cv-entry"><h3 className="cv-role">Bachelor of Technology in Information Technology</h3><p className="cv-copy mt-1">Rwanda Polytechnic (RP) — Musanze College</p><p className="cv-muted mt-1">Current programme</p></article>
-            <article className="cv-entry mt-4"><h3 className="cv-role">Secondary Education — Networking</h3><p className="cv-copy mt-1">Lycée Saint Alexandre Sauli de Muhura</p><p className="cv-muted mt-1">Secondary studies completed in 2022</p></article>
+            <article className="cv-entry"><h3 className="cv-role">Bachelor of Technology in Information Technology (BTech IT)</h3><p className="cv-copy mt-1">Rwanda Polytechnic (RP) — Musanze College</p><p className="cv-muted mt-1">Currently pursuing · One-year programme</p></article>
+            <article className="cv-entry mt-4"><h3 className="cv-role">A1 Qualification in Information Technology</h3><p className="cv-copy mt-1">Completed</p><p className="cv-muted mt-1">Professional qualification</p></article>
+            <article className="cv-entry mt-4"><h3 className="cv-role">Secondary Education — Networking</h3><p className="cv-copy mt-1">Lycée Saint Alexandre Sauli de Muhura</p><p className="cv-muted mt-1">Completed in 2022</p></article>
 
             <SectionTitle>Professional Development</SectionTitle>
             <p className="cv-copy">Continuously developing practical skills through personal software projects, GitHub version control, networking exercises, database work, and introductory machine-learning and statistical analysis. Interested in opportunities combining software engineering, technical support, networking, IoT, and data-driven problem solving.</p>
