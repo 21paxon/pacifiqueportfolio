@@ -9,24 +9,31 @@ import { ThemeProvider } from "@/components/theme-provider"
 import "./globals.css"
 
 export const metadata: Metadata = {
-  title: "Pacifique Niyogushimwa | Software Developer, Network Engineer & IoT",
+  title: "Pacifique Niyogushimwa | Full-Stack Developer, Network Engineer & IoT",
   description:
-    "Portfolio of Pacifique Niyogushimwa, an IT professional in Kigali, Rwanda, focused on software development, networking, IoT systems, and Machine Learning.",
+    "Portfolio of Pacifique Niyogushimwa in Kigali, Rwanda, featuring full-stack development, campus security software, bus booking, USSD applications, IoT concepts, and Machine Learning and R data-analysis practice.",
   keywords: [
     "Pacifique Niyogushimwa",
-    "Software Developer Rwanda",
-    "Full-Stack Developer Kigali",
-    "Network Engineer",
-    "IoT Developer",
+    "Full-Stack Developer Rwanda",
+    "Software Developer Kigali",
+    "Network Engineer Rwanda",
+    "IoT Systems",
+    "Java",
     "Spring Boot",
     "Angular",
+    "Node.js",
+    "PostgreSQL",
+    "Machine Learning",
+    "R Data Analysis",
+    "Campus Security and Reporting System",
   ],
   openGraph: {
     title: "Pacifique Niyogushimwa | Technology Portfolio",
     description:
-      "Explore software development, networking, and IoT projects by Pacifique Niyogushimwa.",
+      "Explore software applications, networking, campus security, USSD services, IoT concepts, and data-analysis projects by Pacifique Niyogushimwa.",
     type: "website",
     locale: "en_RW",
+    url: "https://pacifiqueniyogushimwa.netlify.app/",
   },
 }
 
