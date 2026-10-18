@@ -1,9 +1,9 @@
 export const site = {
   name: "Pacifique NIYOGUSHIMWA",
-  subtitle: "Full-Stack Developer | Network Engineer | IoT Enthusiast",
-  role: "Information Technology • Software Development • Networking • IoT",
+  subtitle: "Full-Stack Developer | Network Engineer | IoT Systems Specialist",
+  role: "Software Development • Networking & IT Support • IoT • Data & Machine Learning",
   valueStatement:
-    "I build practical software, connect systems, and explore IoT solutions that solve real-world problems. Currently expanding my skills in Machine Learning.",
+    "I build practical web applications and backend APIs, support reliable IT systems, and explore IoT and data-driven solutions. My current learning includes Machine Learning with Python and statistical analysis with R.",
   location: "Kigali, Rwanda",
   phone: "+250 787 653 042",
   email: "niyogushimwapacifique6@gmail.com",
