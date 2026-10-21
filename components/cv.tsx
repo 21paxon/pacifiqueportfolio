@@ -20,7 +20,7 @@ export function CV() {
     <>
       <div className="mx-auto mt-5 flex max-w-[900px] items-center justify-between gap-3 px-4 print:hidden sm:px-0">
         <Link href="/" className="rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50">← Portfolio</Link>
-        <button onClick={() => window.print()} className="rounded-lg bg-slate-900 px-4 py-2 text-sm font-semibold text-white hover:bg-slate-700">Download / Print CV</button>
+        <button onClick={() => window.print()} title="Opens the print dialog; choose Save as PDF to download your CV" className="rounded-lg bg-slate-900 px-4 py-2 text-sm font-semibold text-white hover:bg-slate-700">Save CV as PDF</button>
       </div>
       <style jsx global>{`
         #cv-root { font-family: Arial, Helvetica, sans-serif; color: #172b3a; }
