@@ -69,7 +69,7 @@ export function downloadCVPdf() {
   const pageIds: number[] = [];
   const fontId = 3;
   const pagesId = 2;
-  objects[1] = "<< /Type /Catalog /Pages 2 0 R >>";
+  objects[0] = "<< /Type /Catalog /Pages 2 0 R >>";
   objects[pagesId - 1] = "";
   objects[fontId - 1] = "<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>";
 
