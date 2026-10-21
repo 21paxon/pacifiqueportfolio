@@ -111,7 +111,7 @@ export function HeroSection() {
                   variant="outline"
                   size="lg"
                   className="w-full rounded-xl border-[#3b82f6]/40 bg-[#0b1220] text-[#dbeafe] transition-all duration-300 hover:scale-[1.02] hover:border-[#3b82f6] hover:bg-[#111b30] hover:shadow-[0_10px_30px_rgba(37,99,235,0.25)]"
-                  aria-label="Download CV as PDF"
+                  aria-label="Open CV / Save as PDF"
                 >
                   <a href={site.cvUrl}>
                     <Download className="mr-2 h-5 w-5" />
