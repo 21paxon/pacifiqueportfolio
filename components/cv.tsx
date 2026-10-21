@@ -2,6 +2,7 @@
 
 import Link from "next/link"
 import { site } from "@/lib/site"
+import { downloadCVPdf } from "@/lib/cv-pdf"
 
 const skillGroups = [
   { title: "Software & Web", items: "Java, Spring Boot, JavaScript, TypeScript, Angular, Python, Node.js, Express.js, REST APIs" },
@@ -20,7 +21,7 @@ export function CV() {
     <>
       <div className="cv-tools mx-auto mt-5 flex max-w-[900px] items-center justify-between gap-3 px-4 print:hidden sm:px-0">
         <Link href="/" className="rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50">← Portfolio</Link>
-        <button type="button" onClick={() => window.print()} title="Choose Save as PDF in the print dialog" aria-label="Print or save CV as PDF" className="rounded-lg bg-slate-900 px-4 py-2 text-sm font-semibold text-white hover:bg-slate-700">Print / Save as PDF</button>
+        <button type="button" onClick={downloadCVPdf} aria-label="Download CV as PDF" className="rounded-lg bg-slate-900 px-4 py-2 text-sm font-semibold text-white hover:bg-slate-700">Download CV as PDF</button>
       </div>
       <style jsx global>{`
         #cv-root { font-family: Arial, Helvetica, sans-serif; color: #172b3a; }
