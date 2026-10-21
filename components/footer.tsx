@@ -1,5 +1,8 @@
-import { Github, Linkedin, Mail } from "lucide-react"
+"use client"
+
+import { Download, Github, Linkedin, Mail } from "lucide-react"
 import { site } from "@/lib/site"
+import { downloadCVPdf } from "@/lib/cv-pdf"
 
 export function Footer() {
   return (
@@ -11,32 +14,43 @@ export function Footer() {
             <div className="text-sm text-muted-foreground">{site.role}</div>
           </div>
 
-          <div className="flex items-center gap-4 text-muted-foreground">
-            <a
-              className="hover:text-foreground transition-colors"
-              href={`mailto:${site.email}`}
-              aria-label="Email"
+          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
+            <button
+              type="button"
+              onClick={downloadCVPdf}
+              className="inline-flex items-center gap-2 rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
             >
-              <Mail className="h-5 w-5" />
-            </a>
-            <a
-              className="hover:text-foreground transition-colors"
-              href={site.githubUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="GitHub"
-            >
-              <Github className="h-5 w-5" />
-            </a>
-            <a
-              className="hover:text-foreground transition-colors"
-              href={site.linkedinUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="LinkedIn"
-            >
-              <Linkedin className="h-5 w-5" />
-            </a>
+              <Download className="h-4 w-4" />
+              Download CV as PDF
+            </button>
+
+            <div className="flex items-center gap-4 text-muted-foreground">
+              <a
+                className="hover:text-foreground transition-colors"
+                href={`mailto:${site.email}`}
+                aria-label="Email"
+              >
+                <Mail className="h-5 w-5" />
+              </a>
+              <a
+                className="hover:text-foreground transition-colors"
+                href={site.githubUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="GitHub"
+              >
+                <Github className="h-5 w-5" />
+              </a>
+              <a
+                className="hover:text-foreground transition-colors"
+                href={site.linkedinUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="LinkedIn"
+              >
+                <Linkedin className="h-5 w-5" />
+              </a>
+            </div>
           </div>
         </div>
 
@@ -47,4 +61,3 @@ export function Footer() {
     </footer>
   )
 }
-
