@@ -9,6 +9,7 @@ import { MapPin, Mail, Phone, Github, Linkedin, ArrowDownRight, Download } from 
 import { Button } from "@/components/ui/button"
 import { HireMeButton } from "@/components/hire-me-button"
 import { site } from "@/lib/site"
+import { downloadCVPdf } from "@/lib/cv-pdf"
 
 
 
@@ -107,16 +108,14 @@ export function HeroSection() {
 
               <motion.div className="grid gap-3 sm:grid-cols-2 lg:flex lg:flex-wrap lg:items-center">
                 <Button
-                  asChild
                   variant="outline"
                   size="lg"
                   className="w-full rounded-xl border-[#3b82f6]/40 bg-[#0b1220] text-[#dbeafe] transition-all duration-300 hover:scale-[1.02] hover:border-[#3b82f6] hover:bg-[#111b30] hover:shadow-[0_10px_30px_rgba(37,99,235,0.25)]"
-                  aria-label="Open CV / Save as PDF"
+                  aria-label="Download CV as PDF"
+                  onClick={downloadCVPdf}
                 >
-                  <a href={site.cvUrl}>
-                    <Download className="mr-2 h-5 w-5" />
-                    Download CV as PDF
-                  </a>
+                  <Download className="mr-2 h-5 w-5" />
+                  Download CV as PDF
                 </Button>
 
                 <HireMeButton
