@@ -3,11 +3,7 @@
 # dependencies
 /node_modules
 
-# next.js
-/.next/
-/out/
-
-# production
+# local build output
 /build
 
 # debug
@@ -19,9 +15,5 @@ yarn-error.log*
 # env files
 .env*
 
-# vercel
-.vercel
-
-# typescript
-*.tsbuildinfo
-next-env.d.ts
+# local agent configuration
+.kilo/
