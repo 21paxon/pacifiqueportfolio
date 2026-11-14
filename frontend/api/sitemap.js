@@ -6,7 +6,7 @@ export default async function sitemap(request, response) {
   const host = request.headers["x-forwarded-host"] || request.headers.host
   const protocol = request.headers["x-forwarded-proto"] || "https"
   const origin = `${protocol}://${host}`
-  const apiBase = process.env.VITE_API_BASE_URL
+  const apiBase = process.env.VITE_API_BASE_URL || "https://pacifiqueportfolio.onrender.com/api/v1"
   const urls = [`${origin}/`]
   if (apiBase) {
     for (const resource of ["projects", "blog"]) {

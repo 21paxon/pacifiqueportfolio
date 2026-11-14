@@ -42,7 +42,7 @@ The API health check is `/api/v1/health`, OpenAPI JSON is `/api/v1/openapi.json`
 
 - Import this repository and set the project root to `frontend/`.
 - Build command: `npm run build`; output directory: `dist`.
-- Add `VITE_API_BASE_URL=https://<your-render-service>.onrender.com/api/v1`.
+- The Vercel API proxy and sitemap use `https://pacifiqueportfolio.onrender.com/api/v1` by default. Set `VITE_API_BASE_URL` in Vercel only if you want to override that API origin.
 - The Vercel serverless proxy forwards `/api/v1/*` to this URL, keeping the browser session cookie same-origin while the API remains independently hosted.
 
 ### Render and Neon

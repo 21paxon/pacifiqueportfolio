@@ -1,6 +1,5 @@
 export default async function apiProxy(request, response) {
-  const apiBase = process.env.VITE_API_BASE_URL
-  if (!apiBase) return response.status(503).json({ error: "VITE_API_BASE_URL is not configured for the API proxy." })
+  const apiBase = process.env.VITE_API_BASE_URL || "https://pacifiqueportfolio.onrender.com/api/v1"
 
   const requestUrl = new URL(request.url, `https://${request.headers.host}`)
   const suffix = requestUrl.pathname.replace(/^\/api\/v1/, "")
