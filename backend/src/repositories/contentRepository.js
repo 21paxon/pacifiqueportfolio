@@ -20,6 +20,11 @@ const writable = {
   skill_categories: new Set(["name","sort_order"]),
   blog_categories: new Set(["name","slug"]),
 }
+const requiredFields = {
+  projects: ["slug", "title"], skills: ["name"], experiences: ["organization", "position"],
+  education: ["institution", "qualification"], certifications: ["name"], blog: ["slug", "title"],
+  skill_categories: ["name"], blog_categories: ["name", "slug"],
+}
 const jsonFields = new Set(["features","technologies","screenshots","responsibilities","achievements","tags"])
 
 function configFor(name) {
@@ -39,8 +44,8 @@ async function list(name, { admin = false, limit = 100, offset = 0, search = "" 
   }
   params.push(Math.min(Math.max(Number(limit) || 100, 1), 200), Math.max(Number(offset) || 0, 0))
   const clause = where.length ? `WHERE ${where.join(" AND ")}` : ""
-  const from = name === "skills" ? "skills LEFT JOIN skill_categories ON skill_categories.id = skills.category_id" : config.table
-  const selection = name === "skills" ? "skills.*, skill_categories.name AS category" : "*"
+  const from = name === "skills" ? "skills LEFT JOIN skill_categories ON skill_categories.id = skills.category_id" : name === "blog" ? "blog_posts LEFT JOIN blog_categories ON blog_categories.id = blog_posts.category_id" : config.table
+  const selection = name === "skills" ? "skills.*, skill_categories.name AS category" : name === "blog" ? "blog_posts.*, blog_categories.name AS category" : "*"
   const result = await pool.query(`SELECT ${selection} FROM ${from} ${clause} ORDER BY ${config.order} LIMIT $${params.length - 1} OFFSET $${params.length}`, params)
   return result.rows
 }
@@ -48,7 +53,10 @@ async function list(name, { admin = false, limit = 100, offset = 0, search = "" 
 async function getBySlug(name, slug, { admin = false } = {}) {
   const config = configFor(name)
   const visibility = admin ? "" : ` AND (${config.publicWhere})`
-  const result = await pool.query(`SELECT * FROM ${config.table} WHERE slug = $1${visibility} LIMIT 1`, [slug])
+  const from = name === "blog" ? "blog_posts LEFT JOIN blog_categories ON blog_categories.id = blog_posts.category_id" : config.table
+  const selection = name === "blog" ? "blog_posts.*, blog_categories.name AS category" : "*"
+  const identifier = name === "blog" ? "blog_posts.slug" : "slug"
+  const result = await pool.query(`SELECT ${selection} FROM ${from} WHERE ${identifier} = $1${visibility} LIMIT 1`, [slug])
   return result.rows[0] || null
 }
 
@@ -58,6 +66,10 @@ async function save(name, id, body) {
   const allowed = writable[name]
   const entries = Object.entries(body || {}).filter(([key]) => allowed.has(key))
   if (!entries.length) throw Object.assign(new Error("No editable fields were provided."), { status: 400 })
+  for (const key of requiredFields[name] || []) {
+    if ((!id || Object.hasOwn(body, key)) && !String(body[key] ?? "").trim()) throw Object.assign(new Error(`${key.replaceAll("_", " ")} is required.`), { status: 400 })
+  }
+  if (["projects", "blog", "blog_categories"].includes(name) && body.slug !== undefined && !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(body.slug)) throw Object.assign(new Error("URL slug can contain lowercase letters, numbers, and single hyphens."), { status: 400 })
   const values = entries.map(([key, value]) => jsonFields.has(key) && !Array.isArray(value) && key !== "tags" ? JSON.stringify(value) : jsonFields.has(key) ? JSON.stringify(value) : value)
   const table = collections[name].table
   const client = await pool.connect()
