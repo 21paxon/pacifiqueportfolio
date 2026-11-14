@@ -25,4 +25,6 @@ async function migrate() {
   console.log("Database migrations are up to date.")
 }
 
-migrate().catch((error) => { console.error(error); process.exitCode = 1 }).finally(() => pool.end())
+if (require.main === module) migrate().catch((error) => { console.error(error); process.exitCode = 1 }).finally(() => pool.end())
+
+module.exports = { migrate }
