@@ -17,7 +17,6 @@ yarn-error.log*
 
 # env files
 .env*
-!.env.example
 
 # local agent configuration
 .kilo/
