@@ -154,10 +154,11 @@ export default function AdminRoot() {
   const navigate = useNavigate()
   const location = useLocation()
   useEffect(() => { api.get("/auth/me").then(({ data }) => setUser(data)).catch(() => setUser(null)) }, [])
-  useEffect(() => { document.documentElement.dataset.theme = dark ? "dark" : "light"; localStorage.setItem("theme", dark ? "dark" : "light") }, [dark])
+  useEffect(() => { document.documentElement.dataset.theme = dark ? "dark" : "light" }, [dark])
+  useEffect(() => { if (!localStorage.getItem("theme")) api.get("/settings").then(({ data }) => { if (data.default_theme) setDark(data.default_theme !== "light") }).catch(() => {}) }, [])
   useEffect(() => { if (user && location.pathname === "/admin/login") navigate("/admin", { replace: true }) }, [user, location.pathname, navigate])
   async function logout() { try { await api.post("/auth/logout") } finally { setUser(null); navigate("/admin/login") } }
   if (user === undefined) return <div className="admin-loading">Loading your workspace…</div>
   if (!user) return <Login onLogin={() => api.get("/auth/me").then(({ data }) => setUser(data)).then(() => navigate("/admin"))} />
-  return <Admin user={user} onLogout={logout} dark={dark} onToggleTheme={() => setDark((value) => !value)} />
+  return <Admin user={user} onLogout={logout} dark={dark} onToggleTheme={() => setDark((value) => { const next = !value; localStorage.setItem("theme", next ? "dark" : "light"); return next })} />
 }
