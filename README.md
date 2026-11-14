@@ -1,0 +1,68 @@
+# Pacifique NIYOGUSHIMWA — Portfolio and CMS
+
+The repository now contains two independently deployable applications. The original static Express site in the repository root is preserved for reference; the new portfolio frontend and API live in `frontend/` and `backend/`.
+
+## Architecture
+
+- `frontend/`: React, Vite, JavaScript, React Router, Axios and Lucide. Deploy to Vercel with the project root set to `frontend/`.
+- `backend/`: Express REST API, PostgreSQL (`pg`), cookie-based administrator auth, Cloudinary uploads and OpenAPI docs. Deploy to Render using `backend/render.yaml`.
+- `backend/migrations/`: versioned schema and existing verified portfolio content. Public endpoints expose published content only; the admin can read drafts after authentication.
+
+The frontend never connects directly to PostgreSQL. All data access goes through the versioned HTTPS API.
+
+## Local development
+
+Requirements: Node.js 20+, a PostgreSQL database (Neon recommended), and Cloudinary credentials for media uploads.
+
+1. Copy `backend/.env.example` to `backend/.env`, set `DATABASE_URL`, a random `JWT_SECRET` of at least 32 characters, an administrator email and a unique password of at least 12 characters. Set Cloudinary values to enable uploads.
+2. Install backend dependencies and apply migrations:
+
+   ```sh
+   cd backend
+   npm install
+   npm run migrate
+   npm run dev
+   ```
+
+3. In another terminal, copy `frontend/.env.example` to `frontend/.env`, install dependencies and start Vite:
+
+   ```sh
+   cd frontend
+   npm install
+   npm run dev
+   ```
+
+The site runs at `http://localhost:5173`; the API runs at `http://localhost:4000`. The backend only creates an initial admin account when `ADMIN_EMAIL` and `ADMIN_PASSWORD` are configured. It never exposes public registration. The initial password is not changed on later server starts; use Admin → Account to rotate it.
+
+The API health check is `/api/v1/health`, OpenAPI JSON is `/api/v1/openapi.json`, and Swagger UI is `/api/docs`.
+
+## Deployment
+
+### Vercel
+
+- Import this repository and set the project root to `frontend/`.
+- Build command: `npm run build`; output directory: `dist`.
+- Add `VITE_API_BASE_URL=https://<your-render-service>.onrender.com/api/v1`.
+
+### Render and Neon
+
+- Create a Render web service from `backend/render.yaml` or set the service root to `backend/`, build command `npm install`, and start command `npm start`.
+- Set `DATABASE_URL` to the Neon connection string, `FRONTEND_URL` to the exact Vercel origin (no trailing slash), `ADMIN_EMAIL`, `ADMIN_PASSWORD` (12+ characters), and a random `JWT_SECRET` (32+ characters). Set the Cloudinary credentials for media.
+- Run `npm run migrate` from the backend root once against the production database before first use. Configure secrets in Render, not source control.
+- Set the production API origin in Vercel as `VITE_API_BASE_URL`, then redeploy the frontend.
+
+Production auth uses HttpOnly, Secure, SameSite=None cookies so the Vercel app can call the Render API. Exact-origin CORS and request-origin checks are configured from `FRONTEND_URL`.
+
+## Content and external configuration
+
+The initial profile, projects, skills, education, certificates, and experience are seeded from information already in the portfolio. Existing employment dates that were absent remain unset. No blog articles, external credentials, certificate files, or CV file are fabricated. Add those assets and content through `/admin` after configuring services.
+
+Contact submissions are validated and stored in PostgreSQL. Cloudinary uploads accept JPG, PNG, WebP, GIF, and PDF up to 8 MB. A missing Cloudinary configuration returns a clear service error.
+
+## API outline
+
+All routes use `/api/v1`. Public GET endpoints include `/profile`, `/projects`, `/projects/:slug`, `/skills`, `/experiences`, `/education`, `/certifications`, `/blog` and `/blog/:slug`. `/contact` stores a message. Administrator login is `/auth/login`, logout is `/auth/logout`; protected content CRUD, profile editing, messages, settings, media, overview, and password changes require the signed HttpOnly session cookie.
+
+## Checks
+
+Run `npm run build` in `frontend/` to create the Vercel production bundle. Run the backend with a configured Neon database to apply migrations and verify CRUD, login, uploads, and message persistence. No production services or credentials are included in this repository.

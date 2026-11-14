@@ -23,7 +23,10 @@ app.use(cookieParser())
 app.use("/api/v1/auth/login", rateLimit({ windowMs: 15 * 60 * 1000, limit: 10, standardHeaders: "draft-7", legacyHeaders: false }))
 app.use("/api/v1/contact", rateLimit({ windowMs: 15 * 60 * 1000, limit: 5, standardHeaders: "draft-7", legacyHeaders: false }))
 
-app.get("/api/v1/health", (_request, response) => response.json({ status: "ok", service: "portfolio-api", timestamp: new Date().toISOString() }))
+app.get("/api/v1/health", async (_request, response) => {
+  try { await require("./config/database").pool.query("SELECT 1"); return response.json({ status: "ok", service: "portfolio-api", database: "connected", timestamp: new Date().toISOString() }) }
+  catch { return response.status(503).json({ status: "unavailable", service: "portfolio-api", database: "disconnected" }) }
+})
 app.use("/api/v1/auth", authRoutes)
 app.use("/api/v1", siteRoutes)
 app.use("/api/v1", contentRoutes)

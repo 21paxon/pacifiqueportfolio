@@ -34,8 +34,9 @@ router.put("/settings", requireAuth, async (request, response, next) => {
   const client = await pool.connect()
   try {
     await client.query("BEGIN")
+    const allowed = new Set(["site_title","site_description","logo_url","favicon_url","github_url","linkedin_url","footer_text","email","phone","location","default_theme","seo_title","seo_description"])
     for (const [key, value] of Object.entries(request.body || {})) {
-      if (!/^[a-z][a-z0-9_]{1,60}$/i.test(key)) continue
+      if (!allowed.has(key)) continue
       await client.query("INSERT INTO website_settings (key, value) VALUES ($1, $2) ON CONFLICT (key) DO UPDATE SET value = EXCLUDED.value, updated_at = now()", [key, JSON.stringify(value)])
     }
     await client.query("COMMIT")
