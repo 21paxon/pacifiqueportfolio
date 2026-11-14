@@ -9,14 +9,30 @@ import DOMPurify from "dompurify"
 const empty = { profile: null, projects: [], skills: [], experiences: [], education: [], certifications: [], blog: [], settings: {} }
 const noSettings = Object.freeze({})
 const portfolioLinks = [{ href: "#about", label: "About" }, { href: "#work", label: "Work" }, { href: "#skills", label: "Skills" }, { href: "#experience", label: "Experience" }, { href: "#contact", label: "Contact" }]
+const collectionKeys = ["projects", "skills", "experiences", "education", "certifications", "blog"]
+
+function asCollection(value, resource) {
+  if (Array.isArray(value)) return value
+  for (const key of ["items", "rows", "data", "results", resource]) if (Array.isArray(value?.[key])) return value[key]
+  return null
+}
 
 function usePortfolio() {
   const [data, setData] = useState(empty)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState("")
   useEffect(() => {
-    Promise.all(["profile", "projects", "skills", "experiences", "education", "certifications", "blog", "settings"].map((key) => api.get(`/${key}`).then(({ data: result }) => [key, result]).catch(() => [key, key === "profile" ? null : key === "settings" ? {} : []])))
-      .then((entries) => { const value = Object.fromEntries(entries); setData(value); if (!value.profile) setError("Portfolio content is not connected yet. Configure the API and run its database migrations to publish your content.") })
+    Promise.all(["profile", ...collectionKeys, "settings"].map((key) => api.get(`/${key}`).then(({ data: result }) => [key, result]).catch(() => [key, key === "profile" ? null : key === "settings" ? {} : []])))
+      .then((entries) => {
+        const raw = Object.fromEntries(entries)
+        const invalidCollections = collectionKeys.filter((key) => asCollection(raw[key], key) === null)
+        const value = Object.fromEntries(entries.map(([key, result]) => [key, collectionKeys.includes(key) ? asCollection(result, key) || [] : result]))
+        if (!value.settings || typeof value.settings !== "object" || Array.isArray(value.settings)) value.settings = {}
+        if (value.profile && (typeof value.profile !== "object" || Array.isArray(value.profile))) value.profile = null
+        setData(value)
+        if (invalidCollections.length) setError(`The API returned an unexpected response for: ${invalidCollections.join(", ")}. Check the deployed API URL and response.`)
+        else if (!value.profile) setError("Portfolio content is not connected yet. Configure the API and run its database migrations to publish your content.")
+      })
       .finally(() => setLoading(false))
   }, [])
   useEffect(() => {
@@ -59,14 +75,14 @@ function Header({ profile, settings = noSettings }) {
 }
 
 function ProjectCard({ project }) {
-  return <article className="project-card"><Link to={`/projects/${project.slug}`} className="project-image">{project.cover_image && <img src={project.cover_image} alt={project.title} loading="lazy" />}<span className="project-status"><span className="sr-only">Project status: </span>{project.status}</span></Link><div className="project-copy"><div className="project-meta">{project.category || "Project"}{project.featured && <span>Featured</span>}</div><h3><Link to={`/projects/${project.slug}`}>{project.title}</Link></h3><p>{project.description}</p><div className="tag-list">{(project.technologies || []).map((tag) => <span key={tag}>{tag}</span>)}</div><Link className="text-link" to={`/projects/${project.slug}`}>Project details <ArrowUpRight size={15} /></Link></div></article>
+  return <article className="project-card"><Link to={`/projects/${project.slug}`} className="project-image">{project.cover_image && <img src={project.cover_image} alt={project.title} loading="lazy" />}<span className="project-status"><span className="sr-only">Project status: </span>{project.status}</span></Link><div className="project-copy"><div className="project-meta">{project.category || "Project"}{project.featured && <span>Featured</span>}</div><h3><Link to={`/projects/${project.slug}`}>{project.title}</Link></h3><p>{project.description}</p><div className="tag-list">{(Array.isArray(project.technologies) ? project.technologies : []).map((tag) => <span key={tag}>{tag}</span>)}</div><Link className="text-link" to={`/projects/${project.slug}`}>Project details <ArrowUpRight size={15} /></Link></div></article>
 }
 
 function HomePage() {
   const { data, loading, error } = usePortfolio()
   const { profile, projects, skills, experiences, education, certifications, blog } = data
   const categories = [...new Set(skills.map((skill) => skill.category || "Technical skills"))]
-  return <><Header profile={profile} settings={data.settings} /><main id="home">
+  return <><Header profile={profile} settings={data.settings} />{error && !loading && <div className="empty-panel" role="status">{error}</div>}<main id="home">
     <section className="hero-shell"><div className="hero-grid"><div className="hero-content"><div className="availability"><span></span>{profile?.available ? "Available for opportunities" : "Information Technology professional"}</div><p className="hero-kicker">SOFTWARE · NETWORKS · CONNECTED SYSTEMS</p><h1>{profile?.headline || "Building useful software and connected systems."}</h1><p className="hero-intro">{profile?.introduction || (loading ? "Loading portfolio…" : error)}</p><div className="hero-actions"><a className="button button-primary" href="#work">Explore my work <ArrowDown size={16} /></a><a className="button button-quiet" href="#contact">Get in touch <ArrowUpRight size={16} /></a></div><div className="hero-socials">{(profile?.github_url || data.settings.github_url) && <a href={profile?.github_url || data.settings.github_url} target="_blank" rel="noreferrer"><Github size={17} /> GitHub</a>}{(profile?.linkedin_url || data.settings.linkedin_url) && <a href={profile?.linkedin_url || data.settings.linkedin_url} target="_blank" rel="noreferrer"><Linkedin size={17} /> LinkedIn</a>}</div></div><div className="hero-portrait"><img src={profile?.photo_url || "/pssportphot.jpeg"} alt={profile?.full_name || "Portfolio owner"} /><div className="portrait-caption"><span className="portrait-dot"></span><div><strong>{profile?.full_name || "Pacifique NIYOGUSHIMWA"}</strong><small>{profile?.location || "Kigali, Rwanda"}</small></div><MapPin size={17} /></div><div className="portrait-index">01 / RW</div></div></div><div className="hero-bottom"><span>SCROLL TO EXPLORE</span><span>BASED IN {profile?.location?.toUpperCase() || "KIGALI, RWANDA"}</span></div></section>
     <section className="section section-about" id="about"><div className="section-label">01 / ABOUT</div><div className="about-layout"><h2>Curious about how things work. Focused on making them work better.</h2><div><p>{profile?.about || profile?.introduction}</p></div></div></section>
     <section className="section section-projects" id="work"><div className="section-heading"><div><div className="section-label">02 / SELECTED WORK</div><h2>Projects & practice</h2></div><p>Software, data and IoT work rooted in practical problems and continued learning.</p></div>{loading ? <p className="inline-state">Loading projects…</p> : projects.length ? <div className="project-grid">{projects.map((project) => <ProjectCard key={project.id} project={project} />)}</div> : <div className="empty-panel">Projects will appear here when they are published in the portfolio dashboard.</div>}</section>
