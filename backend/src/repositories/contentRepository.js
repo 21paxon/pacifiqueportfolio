@@ -54,6 +54,7 @@ async function getBySlug(name, slug, { admin = false } = {}) {
 
 async function save(name, id, body) {
   configFor(name)
+  if (name === "blog" && body?.status === "published" && !body.published_at) body = { ...body, published_at: new Date().toISOString() }
   const allowed = writable[name]
   const entries = Object.entries(body || {}).filter(([key]) => allowed.has(key))
   if (!entries.length) throw Object.assign(new Error("No editable fields were provided."), { status: 400 })
