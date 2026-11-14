@@ -1,11 +1,11 @@
 # Pacifique NIYOGUSHIMWA — Portfolio and CMS
 
-The repository now contains two independently deployable applications. The original static Express site in the repository root is preserved for reference; the new portfolio frontend and API live in `frontend/` and `backend/`.
+The repository contains two independently deployable applications: the React/Vite website in `frontend/` and the Express API in `backend/`. Root-level npm scripts are workspace shortcuts only.
 
 ## Architecture
 
 - `frontend/`: React, Vite, JavaScript, React Router, Axios and Lucide. Deploy to Vercel with the project root set to `frontend/`.
-- `backend/`: Express REST API, PostgreSQL (`pg`), cookie-based administrator auth, Cloudinary uploads and OpenAPI docs. Deploy to Render using `backend/render.yaml`.
+- `backend/`: Express REST API, PostgreSQL (`pg`), cookie-based administrator auth, Cloudinary uploads and OpenAPI docs. Deploy to Render using the root `render.yaml`.
 - `backend/migrations/`: versioned schema and existing verified portfolio content. Public endpoints expose published content only; the admin can read drafts after authentication.
 
 The frontend never connects directly to PostgreSQL. All data access goes through the versioned HTTPS API.

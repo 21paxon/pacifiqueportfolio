@@ -1,21 +1,13 @@
 {
-  "name": "pacifiqueportfolio",
-  "version": "1.0.0",
+  "name": "pacifique-portfolio-workspace",
   "private": true,
   "description": "Pacifique Niyogushimwa's decoupled React portfolio and Express API",
-  "main": "server.js",
   "scripts": {
     "build": "npm --prefix frontend run build",
     "dev": "npm run dev:web",
-    "start": "node server.js",
-    "dev:legacy": "node --watch server.js",
     "dev:web": "npm --prefix frontend run dev",
     "dev:api": "npm --prefix backend run dev",
     "migrate": "npm --prefix backend run migrate",
     "build:web": "npm --prefix frontend run build"
-  },
-  "dependencies": {
-    "@emailjs/nodejs": "^5.0.2",
-    "express": "^4.21.2"
   }
 }
