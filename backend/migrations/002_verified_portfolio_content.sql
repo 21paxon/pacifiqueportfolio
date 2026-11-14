@@ -40,7 +40,7 @@ INSERT INTO skill_categories (name,sort_order) VALUES
 ('Programming Languages',1),('Frontend Development',2),('Backend Development',3),('Databases & Data Analysis',4),('Development Tools',5),('Networking & IT Infrastructure',6),('AI & Data',7),('DevOps & Cloud',8),('IoT & Embedded Systems',9)
 ON CONFLICT (name) DO NOTHING;
 INSERT INTO skills (name,category_id,proficiency_type,sort_order)
-SELECT seed.name, category.id, 'practical', seed.sort_order FROM (VALUES
+SELECT seed.name, category.id, CASE WHEN seed.category_name = 'DevOps & Cloud' OR seed.name IN ('Machine Learning','Data Mining') THEN 'learning' ELSE 'practical' END, seed.sort_order FROM (VALUES
 ('Python','Programming Languages',1),('Java','Programming Languages',2),('JavaScript','Programming Languages',3),('TypeScript','Programming Languages',4),('SQL','Programming Languages',5),
 ('Angular','Frontend Development',1),('HTML5','Frontend Development',2),('CSS3','Frontend Development',3),
 ('Node.js','Backend Development',1),('Express.js','Backend Development',2),('Spring Boot','Backend Development',3),('REST APIs','Backend Development',4),

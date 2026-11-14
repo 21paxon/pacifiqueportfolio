@@ -52,6 +52,27 @@ const openapi = {
     "/admin/media": { post: { security: [{ cookieAuth: [] }], summary: "Upload media to Cloudinary", responses: { 201: { description: "Media record" } } } },
   },
 }
+for (const resource of ["projects", "skills", "experiences", "education", "certifications", "blog", "skill_categories", "blog_categories"]) {
+  const path = `/${resource}`
+  openapi.paths[path] ||= {}
+  openapi.paths[path].get ||= { summary: `List ${resource}`, responses: { 200: { description: "Content list" } } }
+  openapi.paths[path].post = { security: [{ cookieAuth: [] }], summary: `Create ${resource} item`, responses: { 201: { description: "Created item" }, 401: { description: "Authentication required" } } }
+  openapi.paths[`/${resource}/{id}`] = {
+    put: { security: [{ cookieAuth: [] }], summary: `Update ${resource} item`, parameters: [{ name: "id", in: "path", required: true, schema: { type: "string", format: "uuid" } }], responses: { 200: { description: "Updated item" }, 404: { description: "Not found" } } },
+    delete: { security: [{ cookieAuth: [] }], summary: `Delete ${resource} item`, parameters: [{ name: "id", in: "path", required: true, schema: { type: "string", format: "uuid" } }], responses: { 204: { description: "Deleted item" }, 404: { description: "Not found" } } },
+  }
+}
+openapi.paths["/auth/me"] = { get: { security: [{ cookieAuth: [] }], summary: "Read the signed-in administrator", responses: { 200: { description: "Administrator session" }, 401: { description: "Authentication required" } } } }
+openapi.paths["/settings"] = { get: { summary: "Read public website settings", responses: { 200: { description: "Public settings" } } }, put: { security: [{ cookieAuth: [] }], summary: "Update website settings", responses: { 200: { description: "Saved settings" } } } }
+openapi.paths["/admin/overview"] ||= { get: { security: [{ cookieAuth: [] }], summary: "Read dashboard statistics", responses: { 200: { description: "Database-backed statistics" } } } }
+openapi.paths["/admin/messages"] = { get: { security: [{ cookieAuth: [] }], summary: "List contact messages", responses: { 200: { description: "Message list" } } } }
+openapi.paths["/admin/messages/{id}"] = {
+  patch: { security: [{ cookieAuth: [] }], summary: "Mark a message read or archived", responses: { 200: { description: "Updated message" } } },
+  delete: { security: [{ cookieAuth: [] }], summary: "Delete a message", responses: { 204: { description: "Deleted message" } } },
+}
+openapi.paths["/admin/media"] = { get: { security: [{ cookieAuth: [] }], summary: "List media assets", responses: { 200: { description: "Media list" } } }, post: { security: [{ cookieAuth: [] }], summary: "Upload a media asset", responses: { 201: { description: "Uploaded media" } } } }
+openapi.paths["/admin/media/{id}"] = { delete: { security: [{ cookieAuth: [] }], summary: "Delete a media asset", responses: { 204: { description: "Deleted media" } } } }
+openapi.paths["/admin/account/password"] = { post: { security: [{ cookieAuth: [] }], summary: "Change administrator password", responses: { 200: { description: "Password changed" }, 401: { description: "Current password is incorrect" } } } }
 app.get("/api/v1/openapi.json", (_request, response) => response.json(openapi))
 app.use("/api/docs", swaggerUi.serve, swaggerUi.setup(openapi))
 

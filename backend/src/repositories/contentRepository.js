@@ -60,17 +60,47 @@ async function save(name, id, body) {
   if (!entries.length) throw Object.assign(new Error("No editable fields were provided."), { status: 400 })
   const values = entries.map(([key, value]) => jsonFields.has(key) && !Array.isArray(value) && key !== "tags" ? JSON.stringify(value) : jsonFields.has(key) ? JSON.stringify(value) : value)
   const table = collections[name].table
-  if (id) {
-    values.push(id)
-    const sets = entries.map(([key], index) => `${key} = $${index + 1}${jsonFields.has(key) ? "::jsonb" : ""}`)
-    if (collections[name].timestamps !== false) sets.push("updated_at = now()")
-    const result = await pool.query(`UPDATE ${table} SET ${sets.join(", ")} WHERE id = $${values.length} RETURNING *`, values)
-    return result.rows[0] || null
-  }
-  const columns = entries.map(([key]) => key)
-  const placeholders = entries.map(([key], index) => `$${index + 1}${jsonFields.has(key) ? "::jsonb" : ""}`)
-  const result = await pool.query(`INSERT INTO ${table} (${columns.join(", ")}) VALUES (${placeholders.join(", ")}) RETURNING *`, values)
-  return result.rows[0]
+  const client = await pool.connect()
+  try {
+    await client.query("BEGIN")
+    let result
+    if (id) {
+      values.push(id)
+      const sets = entries.map(([key], index) => `${key} = $${index + 1}${jsonFields.has(key) ? "::jsonb" : ""}`)
+      if (collections[name].timestamps !== false) sets.push("updated_at = now()")
+      result = await client.query(`UPDATE ${table} SET ${sets.join(", ")} WHERE id = $${values.length} RETURNING *`, values)
+    } else {
+      const columns = entries.map(([key]) => key)
+      const placeholders = entries.map(([key], index) => `$${index + 1}${jsonFields.has(key) ? "::jsonb" : ""}`)
+      result = await client.query(`INSERT INTO ${table} (${columns.join(", ")}) VALUES (${placeholders.join(", ")}) RETURNING *`, values)
+    }
+    const record = result.rows[0]
+    if (!record) { await client.query("ROLLBACK"); return null }
+
+    if (name === "projects" && Object.hasOwn(body, "screenshots")) {
+      await client.query("DELETE FROM project_images WHERE project_id = $1", [record.id])
+      for (const [index, image] of (Array.isArray(body.screenshots) ? body.screenshots : []).entries()) {
+        if (typeof image === "string" && image.trim()) await client.query("INSERT INTO project_images (project_id, url, alt_text, sort_order) VALUES ($1,$2,$3,$4)", [record.id, image.trim(), `${record.title} screenshot`, index])
+      }
+    }
+
+    if (name === "blog" && Object.hasOwn(body, "tags")) {
+      await client.query("DELETE FROM blog_post_tags WHERE blog_post_id = $1", [record.id])
+      for (const item of (Array.isArray(body.tags) ? body.tags : [])) {
+        const tagName = String(item).trim().slice(0, 80)
+        const slug = tagName.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "")
+        if (!slug) continue
+        const tag = await client.query("INSERT INTO blog_tags (name, slug) VALUES ($1,$2) ON CONFLICT (name) DO UPDATE SET name = EXCLUDED.name RETURNING id", [tagName, slug])
+        await client.query("INSERT INTO blog_post_tags (blog_post_id, blog_tag_id) VALUES ($1,$2) ON CONFLICT DO NOTHING", [record.id, tag.rows[0].id])
+      }
+    }
+
+    await client.query("COMMIT")
+    return record
+  } catch (error) {
+    await client.query("ROLLBACK")
+    throw error
+  } finally { client.release() }
 }
 
 async function remove(name, id) {
