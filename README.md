@@ -47,7 +47,7 @@ The API health check is `/api/v1/health`, OpenAPI JSON is `/api/v1/openapi.json`
 
 ### Render and Neon
 
-- Create a Render web service from `backend/render.yaml` or set the service root to `backend/`, build command `npm install`, and start command `npm start`.
+- Create the Render web service from the repository-root `render.yaml` (service root `backend/`, build command `npm install`, start command `npm start`).
 - Set `DATABASE_URL` to the Neon connection string, `FRONTEND_URL` to the exact Vercel origin (no trailing slash), `ADMIN_EMAIL`, `ADMIN_PASSWORD` (12+ characters), and a random `JWT_SECRET` (32+ characters). Set the Cloudinary credentials for media.
 - The backend applies pending migrations on startup before listening. `npm run migrate` is also available for manual maintenance. Configure secrets in Render, not source control.
 - Set the production API origin in Vercel as `VITE_API_BASE_URL`, then redeploy the frontend.
@@ -58,7 +58,7 @@ Production auth uses an HttpOnly, Secure, SameSite=Lax cookie. The browser calls
 
 The initial profile, projects, skills, education, certificates, and experience are seeded from information already in the portfolio. Existing employment dates that were absent remain unset. No blog articles, external credentials, certificate files, or CV file are fabricated. Add those assets and content through `/admin` after configuring services.
 
-Contact submissions are validated and stored in PostgreSQL. Cloudinary uploads accept JPG, PNG, WebP, GIF, and PDF up to 8 MB. A missing Cloudinary configuration returns a clear service error.
+Contact submissions are validated and stored in PostgreSQL. Cloudinary uploads accept JPG, PNG, WebP, GIF, and PDF up to 4 MB. A missing Cloudinary configuration returns a clear service error.
 
 ## API outline
 

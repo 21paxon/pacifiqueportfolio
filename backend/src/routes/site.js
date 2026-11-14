@@ -6,7 +6,7 @@ const { pool } = require("../config/database")
 const { requireAuth } = require("../middleware/auth")
 
 const router = express.Router()
-const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 8 * 1024 * 1024 }, fileFilter: (req, file, done) => {
+const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 4 * 1024 * 1024 }, fileFilter: (req, file, done) => {
   if (/^(image\/(jpeg|png|webp|gif)|application\/pdf)$/.test(file.mimetype)) return done(null, true)
   return done(new Error("Only JPG, PNG, WebP, GIF, and PDF files are allowed."))
 } })

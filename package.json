@@ -2,12 +2,17 @@
   "name": "pacifiqueportfolio",
   "version": "1.0.0",
   "private": true,
-  "description": "Pacifique Niyogushimwa's portfolio powered by Node.js and Express",
+  "description": "Pacifique Niyogushimwa's decoupled React portfolio and Express API",
   "main": "server.js",
   "scripts": {
-    "build": "node -e \"console.log('Static Express site is ready to serve')\"",
-    "dev": "node --watch server.js",
-    "start": "node server.js"
+    "build": "npm --prefix frontend run build",
+    "dev": "npm run dev:web",
+    "start": "node server.js",
+    "dev:legacy": "node --watch server.js",
+    "dev:web": "npm --prefix frontend run dev",
+    "dev:api": "npm --prefix backend run dev",
+    "migrate": "npm --prefix backend run migrate",
+    "build:web": "npm --prefix frontend run build"
   },
   "dependencies": {
     "@emailjs/nodejs": "^5.0.2",
