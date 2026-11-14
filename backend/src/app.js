@@ -78,7 +78,7 @@ app.use("/api/docs", swaggerUi.serve, swaggerUi.setup(openapi))
 
 app.use((request, response) => response.status(404).json({ error: `Route not found: ${request.method} ${request.path}` }))
 app.use((error, _request, response, _next) => {
-  const status = error.status || (error.code === "23505" ? 409 : error.code === "23503" ? 400 : 500)
+  const status = error.status || (error.code === "23505" ? 409 : ["23503", "23514", "23502", "22P02", "22007", "22008"].includes(error.code) ? 400 : 500)
   if (status >= 500) console.error("API error:", error)
   response.status(status).json({ error: status === 500 ? "An unexpected server error occurred." : error.message })
 })
