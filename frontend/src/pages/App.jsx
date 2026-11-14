@@ -6,7 +6,7 @@ import api from "../services/api"
 import Admin from "./Admin.jsx"
 import DOMPurify from "dompurify"
 
-const empty = { profile: null, projects: [], skills: [], experiences: [], education: [], certifications: [], blog: [] }
+const empty = { profile: null, projects: [], skills: [], experiences: [], education: [], certifications: [], blog: [], settings: {} }
 const portfolioLinks = [{ href: "#about", label: "About" }, { href: "#work", label: "Work" }, { href: "#skills", label: "Skills" }, { href: "#experience", label: "Experience" }, { href: "#contact", label: "Contact" }]
 
 function usePortfolio() {
@@ -14,10 +14,11 @@ function usePortfolio() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState("")
   useEffect(() => {
-    Promise.all(["profile", "projects", "skills", "experiences", "education", "certifications", "blog"].map((key) => api.get(`/${key}`).then(({ data: result }) => [key, key === "profile" ? result : result]).catch(() => [key, key === "profile" ? null : []])))
+    Promise.all(["profile", "projects", "skills", "experiences", "education", "certifications", "blog", "settings"].map((key) => api.get(`/${key}`).then(({ data: result }) => [key, result]).catch(() => [key, key === "profile" ? null : key === "settings" ? {} : []])))
       .then((entries) => { const value = Object.fromEntries(entries); setData(value); if (!value.profile) setError("Portfolio content is not connected yet. Configure the API and run its database migrations to publish your content.") })
       .finally(() => setLoading(false))
   }, [])
+  useEffect(() => { if (data.settings?.site_title) document.title = data.settings.site_title }, [data.settings])
   return { data, loading, error }
 }
 
@@ -65,6 +66,14 @@ function DetailPage({ type }) {
   const [record, setRecord] = useState(null)
   const [error, setError] = useState("")
   useEffect(() => { api.get(`/${type}/${slug}`).then(({ data }) => setRecord(data)).catch((reason) => setError(reason.message)) }, [type, slug])
+  useEffect(() => {
+    if (!record) return
+    document.title = `${record.seo_title || record.title} | Pacifique NIYOGUSHIMWA`
+    const description = record.seo_description || record.excerpt || record.description || ""
+    let meta = document.querySelector('meta[name="description"]')
+    if (!meta) { meta = document.createElement("meta"); meta.name = "description"; document.head.appendChild(meta) }
+    meta.content = description
+  }, [record])
   if (error) return <main className="detail-page"><Link to="/" className="text-link"><ArrowLeft size={15} /> Back home</Link><div className="empty-panel">{error}</div></main>
   if (!record) return <main className="detail-page"><p>Loading…</p></main>
   const isProject = type === "projects"
