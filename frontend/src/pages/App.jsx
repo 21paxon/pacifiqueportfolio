@@ -7,6 +7,7 @@ import Admin from "./Admin.jsx"
 import DOMPurify from "dompurify"
 
 const empty = { profile: null, projects: [], skills: [], experiences: [], education: [], certifications: [], blog: [], settings: {} }
+const noSettings = Object.freeze({})
 const portfolioLinks = [{ href: "#about", label: "About" }, { href: "#work", label: "Work" }, { href: "#skills", label: "Skills" }, { href: "#experience", label: "Experience" }, { href: "#contact", label: "Contact" }]
 
 function usePortfolio() {
@@ -34,12 +35,22 @@ function usePortfolio() {
   return { data, loading, error }
 }
 
-function Header({ profile, settings = {} }) {
+function Header({ profile, settings = noSettings }) {
   const [open, setOpen] = useState(false)
   const [dark, setDark] = useState(() => localStorage.getItem("theme") !== "light")
-  useEffect(() => { document.documentElement.dataset.theme = dark ? "dark" : "light"; localStorage.setItem("theme", dark ? "dark" : "light") }, [dark])
-  useEffect(() => { if (!localStorage.getItem("theme") && settings.default_theme) setDark(settings.default_theme !== "light") }, [settings.default_theme])
-  return <header className="site-header"><a className="wordmark" href="/#home">{settings.logo_url ? <img className="site-logo" src={settings.logo_url} alt={settings.site_title || "Portfolio"} /> : <>PN<span>.</span></>}</a><button className="mobile-toggle" onClick={() => setOpen(!open)} aria-expanded={open} aria-label="Toggle navigation">{open ? <X /> : <Menu />}</button><nav className={open ? "site-nav open" : "site-nav"}>{portfolioLinks.map((item) => <a key={item.href} href={`/${item.href}`} onClick={() => setOpen(false)}>{item.label}</a>)}<button className="icon-button theme-toggle" onClick={() => setDark(!dark)} aria-label="Toggle theme">{dark ? <Sun size={17} /> : <Moon size={17} />}</button>{profile?.cv_url && <a className="nav-resume" href={profile.cv_url} target="_blank" rel="noreferrer">Resume <ArrowUpRight size={14} /></a>}</nav></header>
+  const [configuration, setConfiguration] = useState(settings)
+  const [publicProfile, setPublicProfile] = useState(profile)
+  useEffect(() => { setConfiguration(settings); setPublicProfile(profile) }, [settings, profile])
+  useEffect(() => {
+    if (profile && Object.keys(settings).length) return
+    Promise.all([api.get("/profile").catch(() => null), api.get("/settings").catch(() => null)]).then(([profileResult, settingsResult]) => {
+      if (!profile && profileResult?.data) setPublicProfile(profileResult.data)
+      if (!Object.keys(settings).length && settingsResult?.data) setConfiguration(settingsResult.data)
+    })
+  }, [profile, settings])
+  useEffect(() => { document.documentElement.dataset.theme = dark ? "dark" : "light" }, [dark])
+  useEffect(() => { if (!localStorage.getItem("theme") && configuration.default_theme) setDark(configuration.default_theme !== "light") }, [configuration.default_theme])
+  return <header className="site-header"><a className="wordmark" href="/#home">{configuration.logo_url ? <img className="site-logo" src={configuration.logo_url} alt={configuration.site_title || "Portfolio"} /> : <>PN<span>.</span></>}</a><button className="mobile-toggle" onClick={() => setOpen(!open)} aria-expanded={open} aria-label="Toggle navigation">{open ? <X /> : <Menu />}</button><nav className={open ? "site-nav open" : "site-nav"}>{portfolioLinks.map((item) => <a key={item.href} href={`/${item.href}`} onClick={() => setOpen(false)}>{item.label}</a>)}<button className="icon-button theme-toggle" onClick={() => { setDark(!dark); localStorage.setItem("theme", dark ? "light" : "dark") }} aria-label="Toggle theme">{dark ? <Sun size={17} /> : <Moon size={17} />}</button>{publicProfile?.cv_url && <a className="nav-resume" href={publicProfile.cv_url} target="_blank" rel="noreferrer">Resume <ArrowUpRight size={14} /></a>}</nav></header>
 }
 
 function ProjectCard({ project }) {
