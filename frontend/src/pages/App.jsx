@@ -25,6 +25,11 @@ function usePortfolio() {
       const description = document.querySelector('meta[name="description"]')
       if (description) description.content = data.settings.site_description
     }
+    if (data.profile) {
+      let structured = document.querySelector("script#portfolio-person-schema")
+      if (!structured) { structured = document.createElement("script"); structured.id = "portfolio-person-schema"; structured.type = "application/ld+json"; document.head.appendChild(structured) }
+      structured.textContent = JSON.stringify({ "@context": "https://schema.org", "@type": "Person", name: data.profile.full_name, jobTitle: data.profile.headline, description: data.profile.introduction, image: data.profile.photo_url, email: data.profile.email, address: data.profile.location, sameAs: [data.profile.github_url, data.profile.linkedin_url].filter(Boolean) })
+    }
     if (!localStorage.getItem("theme") && data.settings?.default_theme) document.documentElement.dataset.theme = data.settings.default_theme === "light" ? "light" : "dark"
     if (data.settings?.favicon_url) {
       let icon = document.querySelector('link[rel="icon"]')
@@ -92,12 +97,18 @@ function DetailPage({ type }) {
   useEffect(() => { api.get(`/${type}/${slug}`).then(({ data }) => setRecord(data)).catch((reason) => setError(reason.message)) }, [type, slug])
   useEffect(() => {
     if (!record) return
-    document.title = `${record.seo_title || record.title} | Pacifique NIYOGUSHIMWA`
+    const title = `${record.seo_title || record.title} | Pacifique NIYOGUSHIMWA`
+    document.title = title
     const description = record.seo_description || record.excerpt || record.description || ""
     let meta = document.querySelector('meta[name="description"]')
     if (!meta) { meta = document.createElement("meta"); meta.name = "description"; document.head.appendChild(meta) }
     meta.content = description
-  }, [record])
+    for (const [property, content] of [["og:title", title], ["og:description", description], ["og:type", type === "blog" ? "article" : "website"], ["og:image", record.cover_image || ""]]) {
+      let item = document.querySelector(`meta[property="${property}"]`)
+      if (!item) { item = document.createElement("meta"); item.setAttribute("property", property); document.head.appendChild(item) }
+      item.content = content
+    }
+  }, [record, type])
   if (error) return <main className="detail-page"><Link to="/" className="text-link"><ArrowLeft size={15} /> Back home</Link><div className="empty-panel">{error}</div></main>
   if (!record) return <main className="detail-page"><p>Loading…</p></main>
   const isProject = type === "projects"

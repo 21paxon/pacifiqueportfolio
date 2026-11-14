@@ -75,7 +75,8 @@ function AdminField({ field, value, onChange }) {
   if (["skillCategory", "blogCategory"].includes(type)) return <label className="field-wrap"><span>{label}</span><select id={id} value={value || ""} onChange={(event) => onChange(event.target.value || null)}><option value="">Choose category</option>{categories.map((category) => <option key={category.id} value={category.id}>{category.name}</option>)}</select></label>
   if (type === "textarea") return <label className="field-wrap"><span>{label}</span><textarea id={id} rows="4" value={value || ""} onChange={(event) => onChange(event.target.value)} /></label>
   if (type === "select") return <label className="field-wrap"><span>{label}</span><select id={id} value={value || ""} onChange={(event) => onChange(event.target.value)}>{options.map((option) => <option key={option}>{option}</option>)}</select></label>
-  return <label className="field-wrap"><span>{label}</span><input id={id} type={type} value={value == null ? "" : value} onChange={(event) => onChange(type === "number" ? Number(event.target.value) : event.target.value)} /></label>
+  const inputValue = type === "datetime" && value ? String(value).slice(0, 16) : value == null ? "" : value
+  return <label className="field-wrap"><span>{label}</span><input id={id} type={type} value={inputValue} onChange={(event) => onChange(type === "number" ? Number(event.target.value) : event.target.value)} /></label>
 }
 
 function ResourceManager({ resource }) {

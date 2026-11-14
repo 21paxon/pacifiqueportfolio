@@ -2,7 +2,7 @@ function escapeXml(value) {
   return String(value).replace(/[<>&'\"]/g, (character) => ({ "<": "&lt;", ">": "&gt;", "&": "&amp;", "'": "&apos;", '"': "&quot;" })[character])
 }
 
-module.exports = async function sitemap(request, response) {
+export default async function sitemap(request, response) {
   const host = request.headers["x-forwarded-host"] || request.headers.host
   const protocol = request.headers["x-forwarded-proto"] || "https"
   const origin = `${protocol}://${host}`
