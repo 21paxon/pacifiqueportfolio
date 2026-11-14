@@ -3,7 +3,7 @@ const { requireAuth } = require("../middleware/auth")
 const { createContentController } = require("../controllers/contentController")
 
 const router = express.Router()
-const resources = ["projects", "skills", "experiences", "education", "certifications", "blog"]
+const resources = ["projects", "skills", "experiences", "education", "certifications", "blog", "skill_categories", "blog_categories"]
 for (const resource of resources) {
   const controller = createContentController(resource)
   router.get(`/${resource}`, controller.list)

@@ -5,11 +5,11 @@ CREATE TABLE IF NOT EXISTS admin_users (
   password_hash TEXT NOT NULL, created_at TIMESTAMPTZ NOT NULL DEFAULT now(), updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 CREATE TABLE IF NOT EXISTS profiles (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(), full_name TEXT NOT NULL, headline TEXT NOT NULL DEFAULT '',
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(), full_name TEXT NOT NULL DEFAULT '', headline TEXT NOT NULL DEFAULT '',
   introduction TEXT NOT NULL DEFAULT '', about TEXT NOT NULL DEFAULT '', photo_url TEXT NOT NULL DEFAULT '/pssportphot.jpeg',
   email TEXT NOT NULL DEFAULT '', phone TEXT NOT NULL DEFAULT '', location TEXT NOT NULL DEFAULT '',
   github_url TEXT NOT NULL DEFAULT '', linkedin_url TEXT NOT NULL DEFAULT '', cv_url TEXT NOT NULL DEFAULT '',
-  available BOOLEAN NOT NULL DEFAULT false, updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
+  available BOOLEAN NOT NULL DEFAULT false, singleton BOOLEAN NOT NULL DEFAULT true UNIQUE CHECK (singleton), updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 CREATE TABLE IF NOT EXISTS projects (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(), slug TEXT NOT NULL UNIQUE, title TEXT NOT NULL,

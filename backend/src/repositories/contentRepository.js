@@ -2,11 +2,13 @@ const { pool } = require("../config/database")
 
 const collections = {
   projects: { table: "projects", publicWhere: "published = true", order: "featured DESC, sort_order, created_at DESC" },
-  skills: { table: "skills", publicWhere: "published = true", order: "sort_order, name" },
+  skills: { table: "skills", publicWhere: "published = true", order: "skills.sort_order, skills.name" },
   experiences: { table: "experiences", publicWhere: "published = true", order: "sort_order, start_date DESC NULLS LAST" },
   education: { table: "education", publicWhere: "published = true", order: "sort_order, start_date DESC NULLS LAST" },
   certifications: { table: "certifications", publicWhere: "published = true", order: "sort_order, issue_date DESC NULLS LAST" },
   blog: { table: "blog_posts", publicWhere: "status = 'published' AND published_at <= now()", order: "published_at DESC" },
+  skill_categories: { table: "skill_categories", publicWhere: "true", order: "sort_order, name", timestamps: false },
+  blog_categories: { table: "blog_categories", publicWhere: "true", order: "name", timestamps: false },
 }
 const writable = {
   projects: new Set(["slug","title","description","problem","solution","contribution","features","technologies","category","status","cover_image","screenshots","github_url","demo_url","featured","published","sort_order"]),
@@ -15,6 +17,8 @@ const writable = {
   education: new Set(["institution","qualification","start_date","end_date","expected_completion","details","published","sort_order"]),
   certifications: new Set(["name","issuer","issue_date","file_url","verification_url","published","sort_order"]),
   blog: new Set(["slug","title","excerpt","content","cover_image","category_id","tags","status","published_at","seo_title","seo_description"]),
+  skill_categories: new Set(["name","sort_order"]),
+  blog_categories: new Set(["name","slug"]),
 }
 const jsonFields = new Set(["features","technologies","screenshots","responsibilities","achievements","tags"])
 
@@ -35,7 +39,9 @@ async function list(name, { admin = false, limit = 100, offset = 0, search = "" 
   }
   params.push(Math.min(Math.max(Number(limit) || 100, 1), 200), Math.max(Number(offset) || 0, 0))
   const clause = where.length ? `WHERE ${where.join(" AND ")}` : ""
-  const result = await pool.query(`SELECT * FROM ${config.table} ${clause} ORDER BY ${config.order} LIMIT $${params.length - 1} OFFSET $${params.length}`, params)
+  const from = name === "skills" ? "skills LEFT JOIN skill_categories ON skill_categories.id = skills.category_id" : config.table
+  const selection = name === "skills" ? "skills.*, skill_categories.name AS category" : "*"
+  const result = await pool.query(`SELECT ${selection} FROM ${from} ${clause} ORDER BY ${config.order} LIMIT $${params.length - 1} OFFSET $${params.length}`, params)
   return result.rows
 }
 
@@ -56,7 +62,7 @@ async function save(name, id, body) {
   if (id) {
     values.push(id)
     const sets = entries.map(([key], index) => `${key} = $${index + 1}${jsonFields.has(key) ? "::jsonb" : ""}`)
-    sets.push("updated_at = now()")
+    if (collections[name].timestamps !== false) sets.push("updated_at = now()")
     const result = await pool.query(`UPDATE ${table} SET ${sets.join(", ")} WHERE id = $${values.length} RETURNING *`, values)
     return result.rows[0] || null
   }

@@ -16,12 +16,14 @@ router.get("/profile", async (_request, response, next) => {
 })
 router.put("/profile", requireAuth, async (request, response, next) => {
   try {
-    const fields = ["full_name","headline","introduction","about","photo_url","email","phone","location","github_url","linkedin_url","cv_url","available"]
-    const values = fields.map((key) => request.body?.[key] ?? null)
-    const result = await pool.query(`INSERT INTO profiles (${fields.join(",")}) VALUES (${fields.map((_, i) => `$${i + 1}`).join(",")}) ON CONFLICT DO NOTHING RETURNING *`, values)
-    if (result.rows[0]) return response.json(result.rows[0])
-    const updated = await pool.query(`UPDATE profiles SET ${fields.map((key, i) => `${key} = COALESCE($${i + 1}, ${key})`).join(",")}, updated_at = now() RETURNING *`, values)
-    return response.json(updated.rows[0])
+    const allowed = new Set(["full_name","headline","introduction","about","photo_url","email","phone","location","github_url","linkedin_url","cv_url","available"])
+    const entries = Object.entries(request.body || {}).filter(([key]) => allowed.has(key))
+    if (!entries.length) return response.status(400).json({ error: "Provide at least one profile field." })
+    const fields = entries.map(([key]) => key)
+    const values = entries.map(([, value]) => value)
+    const updates = entries.map(([key], index) => `${key} = $${index + 1}`).join(",")
+    const result = await pool.query(`INSERT INTO profiles (singleton, ${fields.join(",")}) VALUES (true, ${fields.map((_, i) => `$${i + 1}`).join(",")}) ON CONFLICT (singleton) DO UPDATE SET ${updates}, updated_at = now() RETURNING *`, values)
+    return response.json(result.rows[0])
   } catch (error) { return next(error) }
 })
 
