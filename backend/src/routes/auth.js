@@ -5,10 +5,11 @@ const { pool } = require("../config/database")
 const { requireAuth } = require("../middleware/auth")
 
 const router = express.Router()
-const cookieOptions = () => ({ httpOnly: true, secure: process.env.NODE_ENV === "production", sameSite: "strict", maxAge: 8 * 60 * 60 * 1000, path: "/" })
+const cookieOptions = () => ({ httpOnly: true, secure: process.env.NODE_ENV === "production", sameSite: process.env.NODE_ENV === "production" ? "none" : "lax", maxAge: 8 * 60 * 60 * 1000, path: "/" })
 
 router.post("/login", async (request, response, next) => {
   try {
+    if (!process.env.JWT_SECRET || process.env.JWT_SECRET.length < 32) return response.status(503).json({ error: "Authentication is not configured." })
     const email = String(request.body?.email || "").trim().toLowerCase()
     const password = String(request.body?.password || "")
     if (!email || !password) return response.status(400).json({ error: "Email and password are required." })
@@ -22,7 +23,7 @@ router.post("/login", async (request, response, next) => {
   } catch (error) { return next(error) }
 })
 
-router.post("/logout", (request, response) => response.clearCookie("portfolio_token", { httpOnly: true, secure: process.env.NODE_ENV === "production", sameSite: "strict", path: "/" }).status(204).end())
+router.post("/logout", (request, response) => response.clearCookie("portfolio_token", { httpOnly: true, secure: process.env.NODE_ENV === "production", sameSite: process.env.NODE_ENV === "production" ? "none" : "lax", path: "/" }).status(204).end())
 router.get("/me", requireAuth, (request, response) => response.json({ id: request.admin.sub, email: request.admin.email }))
 
 module.exports = router

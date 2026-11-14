@@ -93,6 +93,20 @@ router.post("/admin/media", requireAuth, upload.single("file"), async (request, 
     return response.status(201).json(result.rows[0])
   } catch (error) { return next(error) }
 })
+router.delete("/admin/media/:id", requireAuth, async (request, response, next) => {
+  try {
+    const found = await pool.query("SELECT * FROM media WHERE id = $1", [request.params.id])
+    const asset = found.rows[0]
+    if (!asset) return response.status(404).json({ error: "Media item not found." })
+    if (process.env.CLOUDINARY_CLOUD_NAME && process.env.CLOUDINARY_API_KEY && process.env.CLOUDINARY_API_SECRET) {
+      cloudinary.config({ cloud_name: process.env.CLOUDINARY_CLOUD_NAME, api_key: process.env.CLOUDINARY_API_KEY, api_secret: process.env.CLOUDINARY_API_SECRET })
+      const resourceType = ["image", "video"].includes(asset.resource_type) ? asset.resource_type : "raw"
+      await cloudinary.uploader.destroy(asset.public_id, { resource_type: resourceType, invalidate: true })
+    }
+    await pool.query("DELETE FROM media WHERE id = $1", [request.params.id])
+    return response.status(204).end()
+  } catch (error) { return next(error) }
+})
 
 router.post("/admin/account/password", requireAuth, async (request, response, next) => {
   try {

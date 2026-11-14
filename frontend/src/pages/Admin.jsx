@@ -6,8 +6,8 @@ import api from "../services/api"
 
 const navigation = [
   ["", "Overview", LayoutDashboard], ["profile", "Profile", UserRound], ["projects", "Projects", FolderKanban],
-  ["skills", "Skills", Wrench], ["experiences", "Experience", BriefcaseBusiness], ["education", "Education", GraduationCap],
-  ["certifications", "Certifications", ShieldCheck], ["blog", "Blog", FileText], ["messages", "Messages", Mail],
+  ["skills", "Skills", Wrench], ["skill_categories", "Skill categories", Wrench], ["experiences", "Experience", BriefcaseBusiness], ["education", "Education", GraduationCap],
+  ["certifications", "Certifications", ShieldCheck], ["blog", "Blog", FileText], ["blog_categories", "Blog categories", FileText], ["messages", "Messages", Mail],
   ["media", "Media library", ImagePlus], ["settings", "Website settings", Settings], ["account", "Account", ShieldCheck],
 ]
 
@@ -84,7 +84,7 @@ function ResourceManager({ resource }) {
   const [query, setQuery] = useState("")
   const schema = schemas[resource]
   const title = pretty(resource)
-  async function load() { try { const { data } = await api.get(`/${resource}`, { params: { limit: 200 } }); setRecords(data); setError("") } catch (reason) { setError(reason.message) } }
+  async function load() { try { const { data } = await api.get(`/${resource}`, { params: { admin: true, limit: 200 } }); setRecords(data); setError("") } catch (reason) { setError(reason.message) } }
   useEffect(() => { load() }, [resource])
   const filtered = useMemo(() => records.filter((record) => `${record.title || ""} ${record.name || ""} ${record.organization || ""} ${record.position || ""} ${record.institution || ""}`.toLowerCase().includes(query.toLowerCase())), [records, query])
   function newRecord() { setEditing(Object.fromEntries(schema.map(([key, , type]) => [key, type === "boolean" ? (key === "published" ? true : false) : type === "json" ? "[]" : ""]))) }
@@ -150,9 +150,9 @@ export default function AdminRoot() {
   const navigate = useNavigate()
   const location = useLocation()
   useEffect(() => { api.get("/auth/me").then(({ data }) => setUser(data)).catch(() => setUser(null)) }, [])
+  useEffect(() => { if (user && location.pathname === "/admin/login") navigate("/admin", { replace: true }) }, [user, location.pathname, navigate])
   async function logout() { try { await api.post("/auth/logout") } finally { setUser(null); navigate("/admin/login") } }
   if (user === undefined) return <div className="admin-loading">Loading your workspace…</div>
   if (!user) return <Login onLogin={() => api.get("/auth/me").then(({ data }) => setUser(data)).then(() => navigate("/admin"))} />
-  if (location.pathname === "/admin/login") navigate("/admin", { replace: true })
   return <Admin user={user} onLogout={logout} />
 }
