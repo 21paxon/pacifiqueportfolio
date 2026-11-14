@@ -17,6 +17,13 @@ async function bootstrapAdmin() {
 }
 
 async function start() {
+  if (process.env.NODE_ENV === "production") {
+    const required = ["DATABASE_URL", "JWT_SECRET", "FRONTEND_URL", "ADMIN_EMAIL", "ADMIN_PASSWORD"]
+    const missing = required.filter((name) => !process.env[name])
+    if (missing.length) throw new Error(`Missing required production configuration: ${missing.join(", ")}`)
+    if (process.env.JWT_SECRET.length < 32) throw new Error("JWT_SECRET must contain at least 32 characters.")
+    if (process.env.ADMIN_PASSWORD.length < 12) throw new Error("ADMIN_PASSWORD must contain at least 12 characters.")
+  }
   if (!process.env.DATABASE_URL) console.warn("DATABASE_URL is unset; configure it and run `npm run migrate` before using data endpoints.")
   if (!process.env.JWT_SECRET || process.env.JWT_SECRET.length < 32) console.warn("Set JWT_SECRET to a random value of at least 32 characters before enabling login.")
   if (process.env.DATABASE_URL) {
