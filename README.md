@@ -52,7 +52,7 @@ The API health check is `/api/v1/health`, OpenAPI JSON is `/api/v1/openapi.json`
 - Run `npm run migrate` from the backend root once against the production database before first use. Configure secrets in Render, not source control.
 - Set the production API origin in Vercel as `VITE_API_BASE_URL`, then redeploy the frontend.
 
-Production auth uses HttpOnly, Secure, SameSite=None cookies so the Vercel app can call the Render API. Exact-origin CORS and request-origin checks are configured from `FRONTEND_URL`.
+Production auth uses an HttpOnly, Secure, SameSite=Lax cookie. The browser calls Vercel at its own origin; the Vercel function forwards requests and the cookie to Render. Exact-origin CORS and request-origin checks are configured from `FRONTEND_URL`.
 
 ## Content and external configuration
 

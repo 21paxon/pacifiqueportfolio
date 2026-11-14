@@ -5,7 +5,7 @@ const { pool } = require("../config/database")
 const { requireAuth } = require("../middleware/auth")
 
 const router = express.Router()
-const cookieOptions = () => ({ httpOnly: true, secure: process.env.NODE_ENV === "production", sameSite: process.env.NODE_ENV === "production" ? "none" : "lax", maxAge: 8 * 60 * 60 * 1000, path: "/" })
+const cookieOptions = () => ({ httpOnly: true, secure: process.env.NODE_ENV === "production", sameSite: "lax", maxAge: 8 * 60 * 60 * 1000, path: "/" })
 
 router.post("/login", async (request, response, next) => {
   try {
@@ -23,7 +23,7 @@ router.post("/login", async (request, response, next) => {
   } catch (error) { return next(error) }
 })
 
-router.post("/logout", (request, response) => response.clearCookie("portfolio_token", { httpOnly: true, secure: process.env.NODE_ENV === "production", sameSite: process.env.NODE_ENV === "production" ? "none" : "lax", path: "/" }).status(204).end())
+router.post("/logout", (request, response) => response.clearCookie("portfolio_token", { httpOnly: true, secure: process.env.NODE_ENV === "production", sameSite: "lax", path: "/" }).status(204).end())
 router.get("/me", requireAuth, (request, response) => response.json({ id: request.admin.sub, email: request.admin.email }))
 
 module.exports = router
