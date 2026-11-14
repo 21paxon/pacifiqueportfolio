@@ -54,7 +54,7 @@ function Header({ profile, settings = noSettings }) {
 }
 
 function ProjectCard({ project }) {
-  return <article className="project-card"><Link to={`/projects/${project.slug}`} className="project-image">{project.cover_image && <img src={project.cover_image} alt={project.title} loading="lazy" />}<span className="project-status">{project.status}</span></Link><div className="project-copy"><div className="project-meta">{project.category || "Project"}{project.featured && <span>Featured</span>}</div><h3><Link to={`/projects/${project.slug}`}>{project.title}</Link></h3><p>{project.description}</p><div className="tag-list">{(project.technologies || []).map((tag) => <span key={tag}>{tag}</span>)}</div><Link className="text-link" to={`/projects/${project.slug}`}>Project details <ArrowUpRight size={15} /></Link></div></article>
+  return <article className="project-card"><Link to={`/projects/${project.slug}`} className="project-image">{project.cover_image && <img src={project.cover_image} alt={project.title} loading="lazy" />}<span className="project-status"><span className="sr-only">Project status: </span>{project.status}</span></Link><div className="project-copy"><div className="project-meta">{project.category || "Project"}{project.featured && <span>Featured</span>}</div><h3><Link to={`/projects/${project.slug}`}>{project.title}</Link></h3><p>{project.description}</p><div className="tag-list">{(project.technologies || []).map((tag) => <span key={tag}>{tag}</span>)}</div><Link className="text-link" to={`/projects/${project.slug}`}>Project details <ArrowUpRight size={15} /></Link></div></article>
 }
 
 function HomePage() {
