@@ -20,6 +20,11 @@ CREATE TABLE IF NOT EXISTS projects (
   featured BOOLEAN NOT NULL DEFAULT false, published BOOLEAN NOT NULL DEFAULT false, sort_order INTEGER NOT NULL DEFAULT 0,
   created_at TIMESTAMPTZ NOT NULL DEFAULT now(), updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
+CREATE TABLE IF NOT EXISTS project_images (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(), project_id UUID NOT NULL REFERENCES projects(id) ON DELETE CASCADE,
+  url TEXT NOT NULL, alt_text TEXT NOT NULL DEFAULT '', sort_order INTEGER NOT NULL DEFAULT 0,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
 CREATE TABLE IF NOT EXISTS skill_categories (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(), name TEXT NOT NULL UNIQUE, sort_order INTEGER NOT NULL DEFAULT 0
 );
@@ -45,6 +50,10 @@ CREATE TABLE IF NOT EXISTS certifications (
   sort_order INTEGER NOT NULL DEFAULT 0, updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 CREATE TABLE IF NOT EXISTS blog_categories (id UUID PRIMARY KEY DEFAULT gen_random_uuid(), name TEXT NOT NULL UNIQUE, slug TEXT NOT NULL UNIQUE);
+CREATE TABLE IF NOT EXISTS blog_tags (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(), name TEXT NOT NULL UNIQUE, slug TEXT NOT NULL UNIQUE,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
 CREATE TABLE IF NOT EXISTS blog_posts (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(), slug TEXT NOT NULL UNIQUE, title TEXT NOT NULL,
   excerpt TEXT NOT NULL DEFAULT '', content TEXT NOT NULL DEFAULT '', cover_image TEXT NOT NULL DEFAULT '',
@@ -52,6 +61,11 @@ CREATE TABLE IF NOT EXISTS blog_posts (
   status TEXT NOT NULL DEFAULT 'draft' CHECK(status IN ('draft','published')), published_at TIMESTAMPTZ,
   seo_title TEXT NOT NULL DEFAULT '', seo_description TEXT NOT NULL DEFAULT '', created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
   updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+CREATE TABLE IF NOT EXISTS blog_post_tags (
+  blog_post_id UUID NOT NULL REFERENCES blog_posts(id) ON DELETE CASCADE,
+  blog_tag_id UUID NOT NULL REFERENCES blog_tags(id) ON DELETE CASCADE,
+  PRIMARY KEY (blog_post_id, blog_tag_id)
 );
 CREATE TABLE IF NOT EXISTS contact_messages (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(), name TEXT NOT NULL, email TEXT NOT NULL, subject TEXT NOT NULL DEFAULT '',
@@ -72,5 +86,7 @@ CREATE TABLE IF NOT EXISTS activity_log (
   action TEXT NOT NULL, entity TEXT NOT NULL DEFAULT '', created_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 CREATE INDEX IF NOT EXISTS projects_public_sort_idx ON projects(published, featured DESC, sort_order);
+CREATE INDEX IF NOT EXISTS project_images_order_idx ON project_images(project_id, sort_order);
 CREATE INDEX IF NOT EXISTS blog_posts_public_idx ON blog_posts(status, published_at DESC);
+CREATE INDEX IF NOT EXISTS blog_post_tags_tag_idx ON blog_post_tags(blog_tag_id, blog_post_id);
 CREATE INDEX IF NOT EXISTS contact_messages_recent_idx ON contact_messages(created_at DESC);
