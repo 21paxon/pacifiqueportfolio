@@ -49,9 +49,9 @@ The API health check is `/api/v1/health`, OpenAPI JSON is `/api/v1/openapi.json`
 - Create the Render web service from the repository-root `render.yaml` (service root `backend/`, build command `npm install`, start command `npm start`).
 - Set `DATABASE_URL` to the Neon connection string, `FRONTEND_URL` to the exact Vercel origin (no trailing slash), `ADMIN_EMAIL`, `ADMIN_PASSWORD` (12+ characters), and a random `JWT_SECRET` (32+ characters). Set the Cloudinary credentials for media.
 - The backend applies pending migrations on startup before listening. `npm run migrate` is also available for manual maintenance. Configure secrets in Render, not source control.
-- Set the production API origin in Vercel as `VITE_API_BASE_URL`, then redeploy the frontend.
+- Vercel rewrites `/api/v1/*` to the Render API. Optionally set `VITE_API_BASE_URL` in Vercel to populate projects and articles in the sitemap.
 
-Production auth uses an HttpOnly, Secure, SameSite=Lax cookie. The browser calls Vercel at its own origin; the Vercel function forwards requests and the cookie to Render. Exact-origin CORS and request-origin checks are configured from `FRONTEND_URL`.
+Production auth uses an HttpOnly, Secure, SameSite=Lax cookie. The browser calls Vercel at its own origin; the Vercel rewrite forwards requests and the cookie to Render. Exact-origin CORS and request-origin checks are configured from `FRONTEND_URL`.
 
 ## Content and external configuration
 

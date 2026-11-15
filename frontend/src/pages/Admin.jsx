@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from "react"
 import { Link, useLocation, useNavigate } from "react-router-dom"
 import ReactQuill from "react-quill"
 import DOMPurify from "dompurify"
-import { Activity, ArrowLeft, ArrowUpRight, BriefcaseBusiness, ChevronRight, FileText, FolderKanban, GraduationCap, ImagePlus, LayoutDashboard, LogOut, Mail, Plus, Save, Settings, ShieldCheck, Sun, Moon, Trash2, UserRound, Wrench } from "lucide-react"
+import { Activity, Archive, ArrowLeft, ArrowUpRight, BriefcaseBusiness, ChevronRight, FileText, FolderKanban, GraduationCap, ImagePlus, LayoutDashboard, LogOut, Mail, Plus, RefreshCw, Save, Search, Settings, ShieldCheck, Sun, Moon, Trash2, UserRound, Wrench } from "lucide-react"
 import api from "../services/api"
 
 const navigation = [
@@ -114,12 +114,46 @@ function Messages() {
   const [messages, setMessages] = useState([])
   const [selected, setSelected] = useState(null)
   const [showArchived, setShowArchived] = useState(false)
+  const [unreadOnly, setUnreadOnly] = useState(false)
+  const [query, setQuery] = useState("")
+  const [loading, setLoading] = useState(true)
   const [error, setError] = useState("")
-  async function load() { try { const { data } = await api.get("/admin/messages", { params: { archived: showArchived } }); setMessages(data) } catch (reason) { setError(reason.message) } }
-  useEffect(() => { load() }, [showArchived])
-  async function update(id, body) { try { await api.patch(`/admin/messages/${id}`, body); await load(); if (selected?.id === id) setSelected({ ...selected, ...body }) } catch (reason) { setError(reason.message) } }
-  async function remove(id) { try { await api.delete(`/admin/messages/${id}`); setSelected(null); await load() } catch (reason) { setError(reason.message) } }
-  return <div className="admin-content"><div className="admin-panel table-panel"><div className="panel-heading"><div><div className="section-label">INBOX</div><h2>Contact messages <span className="count-badge">{messages.filter((message) => !message.is_read && !message.archived).length}</span></h2></div><button className="button button-quiet" onClick={() => setShowArchived(!showArchived)}>{showArchived ? "Show inbox" : "Show archived"}</button></div>{error && <div className="form-error">{error}</div>}<div className="message-list">{messages.map((message) => <button className={selected?.id === message.id ? "message-row selected" : "message-row"} key={message.id} onClick={() => { setSelected(message); if (!message.is_read) update(message.id, { is_read: true }) }}><span className={!message.is_read ? "message-dot unread" : "message-dot"}></span><span><strong>{message.name}</strong><small>{message.subject || message.email}</small></span><time>{new Date(message.created_at).toLocaleDateString()}</time></button>)}{!messages.length && <div className="empty-panel">No contact messages yet.</div>}</div></div>{selected && <div className="admin-panel message-detail"><button className="plain-close" onClick={() => setSelected(null)}>×</button><div className="section-label">MESSAGE DETAILS</div><h2>{selected.subject || "New message"}</h2><p><strong>{selected.name}</strong> · <a href={`mailto:${selected.email}`}>{selected.email}</a></p><time>{new Date(selected.created_at).toLocaleString()}</time><div className="message-body">{selected.message}</div><div className="modal-actions"><button className="button button-quiet" onClick={() => update(selected.id, { is_read: !selected.is_read })}>{selected.is_read ? "Mark unread" : "Mark read"}</button><button className="button button-quiet" onClick={() => update(selected.id, { archived: !selected.archived })}>{selected.archived ? "Restore" : "Archive"}</button><button className="button button-danger" onClick={() => remove(selected.id)}><Trash2 size={15} /> Delete</button></div></div>}</div>
+  async function load(archived = showArchived) {
+    setLoading(true)
+    setError("")
+    try {
+      const { data } = await api.get("/admin/messages", { params: { archived } })
+      const nextMessages = Array.isArray(data) ? data : []
+      setMessages(nextMessages)
+      setSelected((current) => current ? nextMessages.find((message) => message.id === current.id) || null : null)
+    } catch (reason) { setError(reason.message) }
+    finally { setLoading(false) }
+  }
+  useEffect(() => { load(showArchived) }, [showArchived])
+  async function update(id, body) {
+    const previous = messages.find((message) => message.id === id)
+    setMessages((current) => current.map((message) => message.id === id ? { ...message, ...body } : message))
+    setSelected((current) => current?.id === id ? { ...current, ...body } : current)
+    setError("")
+    try { await api.patch(`/admin/messages/${id}`, body); if (Object.hasOwn(body, "archived")) await load() }
+    catch (reason) {
+      if (previous) setMessages((current) => current.map((message) => message.id === id ? previous : message))
+      setSelected((current) => current?.id === id && previous ? previous : current)
+      setError(reason.message)
+    }
+  }
+  async function remove(id) {
+    if (!window.confirm("Permanently delete this message? This cannot be undone.")) return
+    try { await api.delete(`/admin/messages/${id}`); setSelected(null); await load() }
+    catch (reason) { setError(reason.message) }
+  }
+  const filteredMessages = messages.filter((message) => {
+    const matchesUnread = !unreadOnly || !message.is_read
+    const searchText = `${message.name || ""} ${message.email || ""} ${message.subject || ""} ${message.message || ""}`.toLowerCase()
+    return matchesUnread && searchText.includes(query.trim().toLowerCase())
+  })
+  const unreadCount = messages.filter((message) => !message.is_read && !message.archived).length
+  return <div className="admin-content"><div className="message-toolbar-heading"><div><div className="section-label">INBOX / {showArchived ? "ARCHIVE" : "MESSAGES"}</div><h2>{showArchived ? "Archived messages" : "Contact messages"}</h2><p>Read, organize, and reply to messages from your portfolio visitors.</p></div><div className="message-toolbar-actions"><button className="button button-quiet" onClick={() => load()} disabled={loading}><RefreshCw size={15} className={loading ? "spin" : ""} /> Refresh</button><button className="button button-quiet" onClick={() => { setSelected(null); setShowArchived((value) => !value) }}><Archive size={15} /> {showArchived ? "Open inbox" : "View archive"}</button></div></div>{error && <div className="form-error" role="alert">{error}</div>}<div className="message-workspace"><section className="admin-panel inbox-panel"><div className="inbox-panel-heading"><div><div className="section-label">{showArchived ? "ARCHIVE" : "ALL MESSAGES"}</div><h3>{messages.length} <span>{showArchived ? "archived" : "received"}</span>{!showArchived && unreadCount > 0 && <span className="unread-total">{unreadCount} unread</span>}</h3></div><button className={unreadOnly ? "filter-chip active" : "filter-chip"} onClick={() => setUnreadOnly((value) => !value)} aria-pressed={unreadOnly}>Unread</button></div><label className="message-search"><Search size={16} /><input type="search" placeholder="Search name, email, or message" value={query} onChange={(event) => setQuery(event.target.value)} aria-label="Search messages" /></label><div className="message-list">{loading ? <div className="inbox-state">Loading messages…</div> : filteredMessages.map((message) => <button className={selected?.id === message.id ? "message-row selected" : "message-row"} key={message.id} onClick={() => { setSelected({ ...message, is_read: true }); if (!message.is_read) update(message.id, { is_read: true }) }} aria-pressed={selected?.id === message.id}><span className={!message.is_read ? "message-dot unread" : "message-dot"}></span><span className="message-row-copy"><strong>{message.name || "Unknown sender"}</strong><small>{message.subject || message.email || "No subject"}</small><span>{message.message}</span></span><time>{new Date(message.created_at).toLocaleDateString()}</time></button>)}{!loading && !filteredMessages.length && <div className="inbox-state">{query || unreadOnly ? "No messages match these filters." : showArchived ? "Your archive is empty." : "Your inbox is clear. New contact messages will appear here."}</div>}</div></section><section className="admin-panel message-detail">{selected ? <><div className="message-detail-heading"><div><div className="section-label">MESSAGE DETAILS</div><h2>{selected.subject || "No subject"}</h2></div><button className="plain-close" onClick={() => setSelected(null)} aria-label="Close message">×</button></div><div className="message-sender"><div className="sender-avatar">{(selected.name || "?").trim().slice(0, 1).toUpperCase()}</div><div><strong>{selected.name || "Unknown sender"}</strong><a href={`mailto:${selected.email}`}>{selected.email}</a></div><time>{new Date(selected.created_at).toLocaleString()}</time></div><div className="message-body">{selected.message}</div><div className="message-detail-actions"><a className="button button-primary" href={`mailto:${selected.email}?subject=${encodeURIComponent(`Re: ${selected.subject || "Your message"}`)}`}><Mail size={15} /> Reply by email</a><button className="button button-quiet" onClick={() => update(selected.id, { is_read: !selected.is_read })}>{selected.is_read ? "Mark unread" : "Mark read"}</button><button className="button button-quiet" onClick={() => update(selected.id, { archived: !selected.archived })}><Archive size={15} /> {selected.archived ? "Restore" : "Archive"}</button><button className="button button-danger" onClick={() => remove(selected.id)}><Trash2 size={15} /> Delete</button></div></> : <div className="message-empty-detail"><Mail size={28} /><h3>Select a message</h3><p>Choose a message from your inbox to read and respond.</p></div>}</section></div></div>
 }
 
 function MediaLibrary() {
